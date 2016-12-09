@@ -1,4 +1,11 @@
-/**
+/******************************************************************************
+ Copyright (C) 2016 Kolodkin Vladimir, Galiullin Marat,
+                    Chirkov Boris <b.v.chirkov@udsu.ru>
+
+ Project website:       http://eesystem.ru
+ Organization website:  http://rintd.ru
+
+ --------------------- DO NOT REMOVE THIS NOTICE ------------------------------
  This file is part of SimulationMoving.
 
  SimulationMoving is free software: you can redistribute it and/or modify
@@ -13,9 +20,11 @@
 
  You should have received a copy of the GNU Lesser General Public License
  along with SimulationMoving. If not, see <http://www.gnu.org/licenses/>.
+ ------------------------------------------------------------------------------
 
- Copyright 2016 Kolodkin Vladimir, Chirkov Boris, Galiullin Marat
- */
+ This code is in BETA; some features are incomplete and the code
+ could be written better.
+ *****************************************************************************/
 package geometry;
 
 /**
