@@ -1,7 +1,15 @@
+# Bin
 *.class
+/target/
+
+# IntelliJ IDEA
 *.iml
-/target/*
 *.idea
+
+# Eclipse
+*.project
+*.classpath
+.settings/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
