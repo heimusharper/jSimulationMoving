@@ -32,7 +32,7 @@ package json.geometry;
  *
  * @author mag
  */
-public class BuildingPIM {
+public class BIM {
 
     /**
      * Общее название здания
@@ -55,17 +55,9 @@ public class BuildingPIM {
     private Transition[] transitions;
 
     // --------------------------------------------------
-
-    public void jsonToString() {
-        System.out.println("  Идентификатор здания		 		" + name);
-        for (Room room : rooms)
-            System.out.println(" rooms[kk].name    " + room.getName());
-    }
-
     @Override
     public String toString() {
-        return ("Name:\t" + name + "\n") +
-                address + "\n" +
+        return "Name:\t" + name + "\n" + address + "\n" +
                 "Number of rooms:\t" + rooms.length + "\n" +
                 "Number of transitions:\t" + transitions.length + "\n";
     }
