@@ -1,5 +1,5 @@
 /******************************************************************************
- Copyright (C) 2016 Galiullin Marat
+ Copyright (C) 2016 Galiullin Marat, Chirkov Boris <b.v.chirkov@udsu.ru>
 
  Project website:       http://eesystem.ru
  Organization website:  http://rintd.ru
@@ -33,6 +33,8 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 
+import java.util.ArrayList;
+
 /**
  * Класс, описывающий зону внутри помещения
  *
@@ -40,6 +42,9 @@ import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
  */
 public class Zone {
 
+    public static final int FLOOR = 0; // Обыное помещение
+    public static final int STAIRS = 1; // Лестничная площадка
+    public static final int UNKNOWN = -1; // Неопределенный тип
     /**
      * Идетнификатор зоны в формате UUID. <br>
      * <hr>
@@ -49,12 +54,10 @@ public class Zone {
      * 550e8400-e29b-41d4-a716-446655440000
      */
     private String id;
-
     /**
      * Высота потолка зоны в метрах
      */
     private double ceilingHeight;
-
     /**
      * Тип зоны по пожарной нагрузке. Цифровой идентификатор вида пространства.
      * <ol>
@@ -76,48 +79,81 @@ public class Zone {
      * </ol>
      */
     private int fireType;
-
     /**
      * Количество людей в зоне
      */
     private double numOfPeople;
-
     /**
      * Примечание. Дополнительная информация.
      */
     private String note;
-
+    /**
+     * Тип зоны
+     */
+    private String type;
     /**
      * Геометрия зоны.<br>
      * [кольца][точки][x,y,z]
      */
     private double[][][] xyz;
-
     /**
      * Светофоры и указатели, расположенные в данной зоне
      */
-    private Light[] lights;
-
+    private ArrayList<Light> lights;
     /**
      * Сенсоры, расположенные в зоне
      */
-    private Sensor[] sensors;
-
+    private ArrayList<Sensor> sensors;
     /**
      * Аудио оповещатели, расположенные в зоне
      */
-    private Speaker[] speakers;
+    private ArrayList<Speaker> speakers;
+    protected Zone() {
+    }
 
     @Override
     public String toString() {
-        return id;
+        return "UUID: " + getId() + "\n" +
+                "TYPE: " + getType() + "\n" +
+                "PEOPLE: " + getNumOfPeople();
+    }
+
+    /**
+     * Метод возвращает тип зоны, который задается на этапе ввода здания
+     *
+     * @return 0, если зона имеет тип FLOOR <br>
+     * 1, если зона имеет тим STAIRS <br>
+     * -1, если тип зоны не определен (UNKNOWN)
+     */
+    public int getType() {
+        switch (type) {
+            case "FLOOR":
+                return FLOOR;
+            case "STAIRS":
+                return STAIRS;
+            default:
+                return UNKNOWN;
+        }
+    }
+
+    /**
+     * Перепад высот в пределах зоны
+     */
+    public double getHeightDifference() {
+        double zMin = Double.MAX_VALUE;
+        double zMax = -Double.MIN_VALUE;
+        for (int i = 0; i < getXyz().length; i++) {
+            final double z = getXyz(0, i, 2);
+            if (z >= zMax) zMax = z;
+            if (z <= zMin) zMin = z;
+        }
+        return zMax - zMin;
     }
 
     /**
      * Приватный метод, возвращающий полигон на структуре XY
      */
     private Polygon getPolygon() {
-
         if (xyz == null)
             return null; // если геометрии нет, то и в полигон не превратить
         GeometryFactory mGF = new GeometryFactory();
@@ -150,41 +186,63 @@ public class Zone {
      */
     public double getArea() {
         Polygon mP = getPolygon();
-        if (mP != null)
-            return mP.getArea();
+        if (mP != null) return mP.getArea();
         else return 0;
     }
 
     /**
-     * Метод, возвращающий периметр
+     * @return Периметр зоны
      */
     public double getPerimeter() {
         Polygon mP = getPolygon();
-        if (mP != null)
-            return mP.getLength();
+        if (mP != null) return mP.getLength();
         else return 0;
     }
 
+    /**
+     * @return Идентификатор зоны в формате UUID.
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Позволяет изментить идентификатор зоны
+     *
+     * @param id - идентификатор в формете UUID
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * @return Расстояние от пола до потолка
+     */
     public double getCeilingHeight() {
         return ceilingHeight;
     }
 
+    /**
+     * Позволяет изменить расстояние от пола до потолка
+     *
+     * @param ceilingHeight - расстояние, м.
+     */
     public void setCeilingHeight(double ceilingHeight) {
         this.ceilingHeight = ceilingHeight;
     }
 
+    /**
+     * @return Тип пожарной нагрузки
+     */
     public int getFireType() {
         return fireType;
     }
 
+    /**
+     * Позволяет изменить тип пожарной нагрузки в зоне
+     *
+     * @param fireType - номер из фиксированного списка
+     */
     public void setFireType(int fireType) {
         this.fireType = fireType;
     }
@@ -196,51 +254,78 @@ public class Zone {
         return numOfPeople;
     }
 
+    /**
+     * Позволяет изменить количество людей в зоне
+     *
+     * @param numOfPeople - количество людей
+     */
     public void setNumOfPeople(double numOfPeople) {
         this.numOfPeople = numOfPeople;
     }
 
+    /**
+     * @return Описание зоны. Примечание.
+     */
     public String getNote() {
         return note;
     }
 
+    /**
+     * Позволяет изменить описание зоны
+     *
+     * @param note - описание
+     */
     public void setNote(String note) {
         this.note = note;
     }
 
+    /**
+     * @return Трехмерный массив, описывающий геометрию зоны. <br>
+     * [кольца][точки][x,y,z]
+     */
     public double[][][] getXyz() {
         return xyz;
     }
 
+    /**
+     * Позволяет изменить геометрию зоны
+     *
+     * @param xyz - [кольца][точки][x,y,z]
+     */
     public void setXyz(double[][][] xyz) {
         this.xyz = xyz;
     }
 
+    /**
+     * @param i - кольца
+     * @param j - точки
+     * @param k - x,y,z
+     * @return Трехмерный массив, описывающий геометрию зоны.
+     */
     public double getXyz(int i, int j, int k) {
         return xyz[i][j][k];
     }
 
-    public Light[] getLights() {
+    /**
+     * @return Списко световых указателей, которые находятся в данной зоне
+     */
+    public ArrayList<Light> getLights() {
         return lights;
     }
 
-    public void setLights(Light[] lights) {
-        this.lights = lights;
-    }
-
-    public Sensor[] getSensors() {
+    /**
+     * @return Список устройств мониторинга состояния среды, которые
+     * находятся в данной зоне
+     */
+    public ArrayList<Sensor> getSensors() {
         return sensors;
     }
 
-    public void setSensors(Sensor[] sensors) {
-        this.sensors = sensors;
-    }
-
-    public Speaker[] getSpeakers() {
+    /**
+     * @return Список речевых оповещателей, которые находятся в данной зоне
+     */
+    public ArrayList<Speaker> getSpeakers() {
         return speakers;
     }
 
-    public void setSpeakers(Speaker[] speakers) {
-        this.speakers = speakers;
-    }
 }
