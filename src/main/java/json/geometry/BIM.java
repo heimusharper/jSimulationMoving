@@ -1,5 +1,5 @@
 /******************************************************************************
- Copyright (C) 2016 Galiullin Marat
+ Copyright (C) 2016 Galiullin Marat, Chirkov Boris <b.v.chirkov@udsu.ru>
 
  Project website:       http://eesystem.ru
  Organization website:  http://rintd.ru
@@ -27,12 +27,14 @@
 
 package json.geometry;
 
+import java.util.ArrayList;
+
 /**
  * Класс используется для десериализации стандарта BECS.json
  *
  * @author mag
  */
-public class BIM {
+public abstract class BIM<R extends Room, T extends Transition> {
 
     /**
      * Общее название здания
@@ -47,106 +49,81 @@ public class BIM {
     /**
      * Массив помещений в здании
      */
-    private Room[] rooms;
+    private ArrayList<R> rooms;
 
     /**
      * Массив переходов/дверей/проемов в здании
      */
-    private Transition[] transitions;
+    private ArrayList<T> transitions;
 
     // --------------------------------------------------
     @Override
     public String toString() {
-        return "Name:\t" + name + "\n" + address + "\n" +
-                "Number of rooms:\t" + rooms.length + "\n" +
-                "Number of transitions:\t" + transitions.length + "\n";
+        return "Name:\t" + name + "\n" + address + "\n" + "Number of " +
+                "rooms:\t" +  rooms.size() + "\n" + "Number of " +
+                "transitions:\t"  + transitions.size() + "\n";
     }
 
+    /**
+     * @return Имя здания
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Позволяет изменять имя здания
+     *
+     * @param name
+     */
+    public void setName(final String name) {
+        this.name = name == null ? "" : name;
     }
 
+    /**
+     * @return Адресные данные здания
+     */
     public Address getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    /**
+     * Позволяет изменть адресные данные здания
+     *
+     * @param address - объект класса {@link Address}
+     */
+    public void setAddress(final Address address) {
         this.address = address;
     }
 
-    public Room[] getRooms() {
+    /**
+     * @return Списко помещений здания
+     */
+    public ArrayList<R> getRooms() {
         return rooms;
     }
 
-    public void setRooms(Room[] rooms) {
-        this.rooms = rooms;
-    }
-
-    public Room getRooms(int i) {
-        return rooms[i];
-    }
-
-    public Transition[] getTransitions() {
-        return transitions;
-    }
-
-    public void setTransitions(Transition[] transitions) {
-        this.transitions = transitions;
-    }
-
-    public Transition getTransitions(int i) {
-        return transitions[i];
+    /**
+     * @param i - номер помещения
+     * @return Помещение под номером i
+     */
+    public R getRoom(final int i) {
+        return rooms.get(i);
     }
 
     /**
-     * Внутренний класс для указания адреса - Address.
+     * @return Список проемов
      */
-    private class Address {
-
-        /**
-         * Улица, дом.
-         */
-        private String street;
-        /**
-         * Город.
-         */
-        private String city;
-        /**
-         * Дополнительная информация.
-         */
-        private String addInfo;
-
-        public String getStreet() {
-            return street;
-        }
-
-        public void setStreet(String street) {
-            this.street = street;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public void setCity(String city) {
-            this.city = city;
-        }
-
-        public String getAddInfo() {
-            return addInfo;
-        }
-
-        public void setAddInfo(String addInfo) {
-            this.addInfo = addInfo;
-        }
-
-        @Override
-        public String toString() {
-            return "Street:\t" + street + "\n" + "City:\t" + city + "\n" + "AddInfo:\t" + addInfo;
-        }
+    public ArrayList<T> getTransitions() {
+        return transitions;
     }
+
+    /**
+     * @param i - номер проема
+     * @return Проем с номером i
+     */
+    public T getTransitions(final int i) {
+        return transitions.get(i);
+    }
+
 }
