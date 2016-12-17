@@ -1,5 +1,5 @@
 /******************************************************************************
- Copyright (C) 2016 Galiullin Marat
+ Copyright (C) 2016 Galiullin Marat, Chirkov Boris <b.v.chirkov@udsu.ru>
 
  Project website:       http://eesystem.ru
  Organization website:  http://rintd.ru
@@ -26,6 +26,8 @@
  *****************************************************************************/
 
 package json.geometry;
+
+import java.util.ArrayList;
 
 /**
  * Класс, описывающий помещение.
@@ -98,85 +100,176 @@ public class Room {
     /**
      * Список зон в данном помещении
      */
-    private Zone[] zones;
+    private ArrayList<Zone> zones;
 
+    /**
+     * @return Название помещения
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Позволяет сменить название помещения
+     * @param name - название помещения
+     */
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getId() {
+    /**
+     * @return Идентификатор помещения в формате UUID
+     */
+    public String getUUID() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    /**
+     * @return Высота помещения
+     */
     public double getCeilingHeight() {
+        if (this.ceilingHeight == 0)
+            throw new Error("Fail! Ceiling height is 0");
         return ceilingHeight;
     }
 
+    /**
+     * Позволяет изменить высоту помещения
+     * @param ceilingHeight - высота помещения. Нельзя задать значение <= 0
+     */
     public void setCeilingHeight(double ceilingHeight) {
+        if (ceilingHeight <= 0) throw new NumberFormatException("Warning! You" +
+                " can not ceiling height set to 0");
         this.ceilingHeight = ceilingHeight;
     }
 
+    /**
+     * @return Тип пожарной нагрузки
+     *
+     * <ol>
+     * <li>Жилые помещения гостиниц, общежитий и т. д.</li>
+     * <li>Столовая, буфет, зал ресторана</li>
+     * <li>Зал театра, кинотеатра, клуба, цирка</li>
+     * <li>Гардероб</li>
+     * <li>Хранилища библиотек, архивы</li>
+     * <li>Музеи, выставки</li>
+     * <li>Подсобные и бытовые помещения, лестничная клетка</li>
+     * <li>Административные помещения, учебные классы школ, ВУЗов, кабинеты поликлиник</li>
+     * <li>Магазины</li>
+     * <li>Зал вокзала</li>
+     * <li>Стоянки легковых автомобилей</li>
+     * <li>Стоянки легковых автомобилей (с двухуровневым хранением)</li>
+     * <li>Стадионы</li>
+     * <li>Спортзалы</li>
+     * <li>Торговый зал гипермаркета</li>
+     * </ol>
+     */
     public int getFireType() {
         return fireType;
     }
 
+    /**
+     * Позволяет задать тип пожарной нагрузки
+     * @param fireType - тип пожарной нагрузки
+     */
     public void setFireType(int fireType) {
         this.fireType = fireType;
     }
 
+    /**
+     * @return Количество людей в помещении
+     */
     public int getNumOfPeople() {
         return numOfPeople;
     }
 
+    /**
+     * Позволяет установить количество людей в помещении
+     * @param numOfPeople - количество людей. Не может быть меньше нуля
+     */
     public void setNumOfPeople(int numOfPeople) {
+        if (numOfPeople < 0) throw new NumberFormatException("Warning! You" +
+                " can not number of people set to -" + numOfPeople);
         this.numOfPeople = numOfPeople;
     }
 
+    /**
+     * @return true - если в помещении нет людей <br>
+     *          false - если в помещении есть люди
+     */
+    public boolean isEmpty() {
+        return numOfPeople == 0;
+    }
+
+    /**
+     * @return Описание
+     */
     public String getNote() {
         return note;
     }
 
+    /**
+     * Позволяет изменить описание
+     * @param note - текст
+     */
     public void setNote(String note) {
         this.note = note;
     }
 
+    /**
+     * @param i - кольца
+     * @param j - точки
+     * @param k - x, y, z
+     * @return  Геометрия всего помещения.<br>
+     *          геометрия целого помещения. (В зонах приводится геометрия отдельных зон)
+     */
     public double getXyz(int i, int j, int k) {
         return xyz[i][j][k];
     }
 
-    public double getXyz(int i, int j) {
-        return xyz[0][i][j];
+    /**
+     * @param j - точки
+     * @param k - x, y, z
+     * @return  Геометрия всего помещения, считая, что отсутствуют
+     * внутренние кольца<br>
+     * геометрия целого помещения. (В зонах приводится геометрия отдельных зон)
+     */
+    public double getXyz(int j, int k) {
+        return xyz[0][j][k];
     }
 
+    /**
+     * @return true - если в геометрии помещения имеются внутренние кольца <br>
+     *          false - если в геометрии помещения отсутствуют внутренние
+     *          кольца <br>
+     * Внутреннее кольцо - нерасчетная област внутри помещения (например:
+     * колонны посреди помещения)
+     */
     public boolean isInternalRing() {
-        return xyz.length == 1;
+        return xyz.length >= 1;
     }
 
+    /**
+     * @return  Геометрия всего помещения. Трехмерный массив
+     * [кольца][точки][x,y,z] <br>
+     * геометрия целого помещения. (В зонах приводится геометрия отдельных зон)
+     */
     public double[][][] getXyz() {
         return xyz;
     }
 
-    public void setXyz(double[][][] xyz) {
-        this.xyz = xyz;
-    }
-
-    public Zone[] getZones() {
+    /**
+     * @return Список всех зон
+     */
+    public ArrayList<Zone> getZones() {
         return zones;
     }
 
-    public void setZones(Zone[] zones) {
-        this.zones = zones;
-    }
-
+    /**
+     * @param i - номер зоны
+     * @return i-тую зону, которая содержится в помещении
+     */
     public Zone getZone(int i) {
-        return zones[i];
+        return zones.get(i);
     }
 }

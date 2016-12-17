@@ -34,6 +34,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Класс, описывающий зону внутри помещения
@@ -113,9 +114,11 @@ public class Zone {
 
     @Override
     public String toString() {
-        return "UUID: " + getId() + "\n" +
-                "TYPE: " + getType() + "\n" +
-                "PEOPLE: " + getNumOfPeople();
+        return "Zone: {" + "id='" + id + '\'' + ", ceilingHeight=" +
+                ceilingHeight + ", fireType=" + fireType + ", numOfPeople=" +
+                numOfPeople + ", note='" + note + '\'' + ", type='" + type +
+                '\''  + ", lights=" + lights +  ", sensors=" + sensors + ", " +
+                "speakers=" + speakers + '}';
     }
 
     /**
