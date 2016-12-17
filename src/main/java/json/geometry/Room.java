@@ -102,6 +102,14 @@ public class Room {
      */
     private ArrayList<Zone> zones;
 
+    @Override
+    public String toString() {
+        return "Room{" + "name='" + name + '\'' + ", id='" + id + '\'' + ", " +
+                "ceilingHeight=" + ceilingHeight + ", fireType=" + fireType +
+                ", numOfPeople=" + numOfPeople + ", note='" + note + '\''  +
+                ", zones=" + zones + '}';
+    }
+
     /**
      * @return Название помещения
      */
