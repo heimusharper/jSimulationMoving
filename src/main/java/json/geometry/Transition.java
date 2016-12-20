@@ -32,8 +32,7 @@ package json.geometry;
  *
  * @author mag
  */
-public class Transition {
-
+public abstract class Transition {
     /**
      * Идетнификатор перехода в формате UUID. <br>
      * <hr>
@@ -75,14 +74,25 @@ public class Transition {
     private double[][] xyz;
 
     /**
-     * Ссылки (UUID) на Светофоры и указатели, привязанные к переходу со стороны помещения A
+     * Ссылки (UUID) на Светофоры и указатели, привязанные к переходу со
+     * стороны помещения A
      */
     private String[] lightsA;
 
     /**
-     * Ссылки (UUID) на Светофоры и указатели, привязанные к переходу со стороны помещения B
+     * Ссылки (UUID) на Светофоры и указатели, привязанные к переходу со
+     * стороны помещения B
      */
     private String[] lightsB;
+
+    @Override
+    public String toString() {
+        return "Transition {" + "id='" + id + '\'' + ", doorHeight=" +
+                doorHeight + ", width=" + width + ", note='" + note + '\'' +
+                ", zoneAId='" + zoneAId + '\'' + ", zoneBId='" + zoneBId +
+                '\'' + ", num of lightsA=" + lightsA.length + ", " +
+                "num of lightsB=" + lightsB.length + '}';
+    }
 
     public String getId() {
         return id;
