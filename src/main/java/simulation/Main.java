@@ -29,15 +29,10 @@ package simulation;
 
 
 import json.extendetGeometry.BIMExt;
-import json.extendetGeometry.Direction;
-import json.extendetGeometry.ZoneExt;
 import json.geometry.BIMLoader;
-import json.geometry.Zone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.TCPServer;
-
-import java.io.IOException;
+import tcp.server.TCPServer;
 
 /**
  * Created by boris on 09.12.16.
