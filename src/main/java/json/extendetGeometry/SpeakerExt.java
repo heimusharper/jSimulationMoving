@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
  *
@@ -6,7 +5,7 @@
  * Organization website:  http://rintd.ru
  *
  * --------------------- DO NOT REMOVE THIS NOTICE -----------------------------
- * Direction is part of jSimulationMoving.
+ * SpeakerExt is part of jSimulationMoving.
  *
  * jSimulationMoving is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,18 +27,10 @@
 
 package json.extendetGeometry;
 
-/**
- * Класс описания направления движения по лестнице.
- * Created by boris on 13.12.16.
- */
-public class Direction {
-    /**
-     * Направление движения - вверх
-     */
-    public static final int UP = 1;
+import json.geometry.Speaker;
 
-    /**
-     * Направление движения - вниз
-     */
-    public static final int DOWN = -1;
+/**
+ * Created by boris on 17.12.16.
+ */
+public class SpeakerExt extends Speaker{
 }
