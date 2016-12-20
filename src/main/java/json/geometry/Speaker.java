@@ -32,7 +32,7 @@ package json.geometry;
  *
  * @author mag
  */
-public class Speaker {
+public abstract class Speaker {
     /**
      * Идетнификатор аудио-оповещателя в формате UUID. <br>
      * <hr>
@@ -57,6 +57,13 @@ public class Speaker {
      * Дополнительная информация
      */
     private String note;
+
+    @Override
+    public String toString() {
+        return "Speaker {" + "id='" + id + '\'' + ", x=" + x + ", y=" + y +
+                "," + " z=" + z + ", deviceId=" + deviceId + ", note='" + note +
+                '\'' + '}';
+    }
 
     public String getId() {
         return id;
