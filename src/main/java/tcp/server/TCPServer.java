@@ -25,11 +25,12 @@
  * could be written better.
  ******************************************************************************/
 
-package server;
+package tcp.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulation.DBus;
+import tools.Prop;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -43,16 +44,76 @@ public class TCPServer extends Thread {
 
     private static final Logger log = LoggerFactory.getLogger(TCPServer.class);
 
+    private final int SERVER_PORT; // Порт, на котором висит сервер
+
+    /**
+     * Allocates a new {@code Thread} object. This constructor has the same
+     * effect as {@linkplain #Thread(ThreadGroup, Runnable, String) Thread}
+     * {@code (null, null, gname)}, where {@code gname} is a newly generated
+     * name. Automatically generated names are of the form
+     * {@code "Thread-"+}<i>n</i>, where <i>n</i> is an integer.
+     */
+    public TCPServer() {
+        SERVER_PORT = Prop.getServerPort();
+    }
+
+    /**
+     * When an object implementing interface <code>Runnable</code> is used
+     * to create a thread, starting the thread causes the object's
+     * <code>run</code> method to be called in that separately executing
+     * thread.
+     * <p>
+     * The general contract of the method <code>run</code> is that it may
+     * take any action whatsoever.
+     *
+     * @see Thread#run()
+     */
+    @Override public void run() {
+        // Открываем сокет
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(SERVER_PORT);
+        } catch (IOException e) {
+            log.error("Fail!", e);
+        }
+        log.info("Server started at {}", serverSocket);
+
+        // Ждем подключение
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            log.info("Waiting for a connection...");
+
+            Socket activeSocket = null;
+            try {
+                activeSocket =
+                        serverSocket != null ? serverSocket.accept() : null;
+                log.info("Received a connection from {}", activeSocket);
+            } catch (IOException e) {
+                log.error("Fail!", e);
+            }
+
+            final Socket finalActiveSocket = activeSocket;
+            Runnable runnable = () -> handleClientRequest(finalActiveSocket);
+
+            // Стартуем новыйе поток для клиента
+            new Thread(runnable).start();
+            log.info("Start a new thread for client {}",
+                    finalActiveSocket != null ?
+                            finalActiveSocket.getInetAddress() :
+                            null);
+        }
+    }
+
     /**
      * Обработчик запросов клиента
      *
      * @param socket - активный сокет, октрытый для клиента
      */
     private static void handleClientRequest(final Socket socket) {
-        try (final BufferedReader socketReader = new BufferedReader(new
-                InputStreamReader(socket.getInputStream())); final
-        BufferedWriter socketWriter = new BufferedWriter(new
-                OutputStreamWriter(socket.getOutputStream()))) {
+        try (final BufferedReader socketReader = new BufferedReader(
+                new InputStreamReader(socket.getInputStream()));
+                final BufferedWriter socketWriter = new BufferedWriter(
+                        new OutputStreamWriter(socket.getOutputStream()))) {
 
             String inMsg;
             while ((inMsg = socketReader.readLine()) != null) {
@@ -71,51 +132,6 @@ public class TCPServer extends Thread {
             log.info("Close connection with {}", socket.getInetAddress());
         } catch (Exception e) {
             log.error("Fail!", e);
-        }
-    }
-
-    /**
-     * When an object implementing interface <code>Runnable</code> is used
-     * to create a thread, starting the thread causes the object's
-     * <code>run</code> method to be called in that separately executing
-     * thread.
-     * <p>
-     * The general contract of the method <code>run</code> is that it may
-     * take any action whatsoever.
-     *
-     * @see Thread#run()
-     */
-    @Override
-    public void run() {
-        // Открываем сокет на порту 12900
-        // TODO Вынести порт в properties
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(12900);
-        } catch (IOException e) {
-            log.error("Fail!", e);
-        }
-        log.info("Server started at {}", serverSocket);
-
-        // Ждем подключение
-        while (true) {
-            log.info("Waiting for a connection...");
-
-            Socket activeSocket = null;
-            try {
-                activeSocket = serverSocket != null ? serverSocket.accept() : null;
-                log.info("Received a connection from {}", activeSocket);
-            } catch (IOException e) {
-                log.error("Fail!", e);
-            }
-
-            final Socket finalActiveSocket = activeSocket;
-            Runnable runnable = () -> handleClientRequest(finalActiveSocket);
-
-            // Стартуем новыйе поток для клиента
-            new Thread(runnable).start();
-            log.info("Start a new thread for client {}", finalActiveSocket !=
-                    null ? finalActiveSocket.getInetAddress() : null);
         }
     }
 }
