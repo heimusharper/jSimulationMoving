@@ -1,4 +1,4 @@
-package json.Errors;
+package json.errors;
 
 /**
  * Created by boris on 20.12.16.

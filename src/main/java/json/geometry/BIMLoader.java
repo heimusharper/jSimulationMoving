@@ -28,7 +28,7 @@
 package json.geometry;
 
 import com.google.gson.Gson;
-import json.Errors.ExitCode;
+import json.errors.ExitCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
