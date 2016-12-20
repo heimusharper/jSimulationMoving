@@ -34,14 +34,16 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Класс, описывающий зону внутри помещения
  *
+ * @param <L> Класс расширенный {@link Light}
+ * @param <S> Класс расширенный {@link Sensor}
+ * @param <P> Класс расширенный {@link Speaker}
  * @author mag
  */
-public class Zone {
+public abstract class Zone<L extends Light, S extends Sensor, P extends Speaker> {
 
     public static final int FLOOR = 0; // Обыное помещение
     public static final int STAIRS = 1; // Лестничная площадка
@@ -100,25 +102,26 @@ public class Zone {
     /**
      * Светофоры и указатели, расположенные в данной зоне
      */
-    private ArrayList<Light> lights;
+    private ArrayList<L> lights;
     /**
      * Сенсоры, расположенные в зоне
      */
-    private ArrayList<Sensor> sensors;
+    private ArrayList<S> sensors;
     /**
      * Аудио оповещатели, расположенные в зоне
      */
-    private ArrayList<Speaker> speakers;
+    private ArrayList<P> speakers;
+
     protected Zone() {
     }
 
     @Override
     public String toString() {
         return "Zone: {" + "id='" + id + '\'' + ", ceilingHeight=" +
-                ceilingHeight + ", fireType=" + fireType + ", numOfPeople=" +
-                numOfPeople + ", note='" + note + '\'' + ", type='" + type +
-                '\''  + ", lights=" + lights +  ", sensors=" + sensors + ", " +
-                "speakers=" + speakers + '}';
+                ceilingHeight + ", fireType=" + fireType + ", numOfPeople="
+                + numOfPeople + ", note='" + note + '\'' + ", type='" + type
+                + '\'' + ", lights=" + lights + ", sensors=" + sensors + ", "
+                + "speakers=" + speakers + '}';
     }
 
     /**
@@ -312,7 +315,7 @@ public class Zone {
     /**
      * @return Списко световых указателей, которые находятся в данной зоне
      */
-    public ArrayList<Light> getLights() {
+    public ArrayList<L> getLights() {
         return lights;
     }
 
@@ -320,14 +323,14 @@ public class Zone {
      * @return Список устройств мониторинга состояния среды, которые
      * находятся в данной зоне
      */
-    public ArrayList<Sensor> getSensors() {
+    public ArrayList<S> getSensors() {
         return sensors;
     }
 
     /**
      * @return Список речевых оповещателей, которые находятся в данной зоне
      */
-    public ArrayList<Speaker> getSpeakers() {
+    public ArrayList<P> getSpeakers() {
         return speakers;
     }
 
