@@ -5,7 +5,7 @@
  * Organization website:  http://rintd.ru
  *
  * --------------------- DO NOT REMOVE THIS NOTICE -----------------------------
- * ExitCode is part of jSimulationMoving.
+ * EBus is part of jSimulationMoving.
  *
  * jSimulationMoving is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,16 +25,30 @@
  * could be written better.
  ******************************************************************************/
 
-package errors;
+package bus;
+
+import com.google.common.eventbus.EventBus;
+import org.slf4j.LoggerFactory;
 
 /**
- * Класс перечня возможных кодов завершения работы программы <br>
+ * Шина событиый {@link EventBus}
+ * <p>
+ * Initialization-on-demand holder idiom
  *
- * Created by boris on 20.12.16.
+ * Created by boris on 15.12.16.
  */
-public class ExitCode {
-    /**
-     * Файл, который подвергается парсингу пуст
-     */
-    public static final int FILE_EMPTY = 10;
+public class EBus {
+
+    public static class EBusHelper {
+        public static final EventBus BUS_INSTANCE;
+
+        static {
+            BUS_INSTANCE = new EventBus(EBusHelper.class.getName());
+            LoggerFactory.getLogger(EBusHelper.class).info("Create instance bus events");
+        }
+    }
+
+    public static EventBus getInstance() {
+        return EBusHelper.BUS_INSTANCE;
+    }
 }

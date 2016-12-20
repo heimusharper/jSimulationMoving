@@ -29,7 +29,7 @@ package tcp.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import simulation.DBus;
+import bus.DBus;
 import tools.Prop;
 
 import java.io.*;

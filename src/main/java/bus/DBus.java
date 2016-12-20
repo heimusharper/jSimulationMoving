@@ -25,15 +25,16 @@
  * could be written better.
  ******************************************************************************/
 
-package simulation;
+package bus;
 
 /**
+ * Общая шина данных. <br>
  * Created by boris on 20.12.16.
  */
 public class DBus {
 
     private static String rawJson;
-    
+
     public static void setRawJson(final String rawJson) {
         DBus.rawJson = rawJson;
     }
