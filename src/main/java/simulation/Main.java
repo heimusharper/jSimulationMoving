@@ -1,6 +1,6 @@
 /******************************************************************************
  Copyright (C) 2016 Kolodkin Vladimir, Galiullin Marat,
-                    Chirkov Boris <b.v.chirkov@udsu.ru>
+ Chirkov Boris <b.v.chirkov@udsu.ru>
 
  Project website:       http://eesystem.ru
  Organization website:  http://rintd.ru
@@ -25,14 +25,33 @@
  This code is in BETA; some features are incomplete and the code
  could be written better.
  *****************************************************************************/
-package geometry;
+package simulation;
+
+
+import json.extendetGeometry.BIMExt;
+import json.extendetGeometry.Direction;
+import json.extendetGeometry.ZoneExt;
+import json.geometry.BIMLoader;
+import json.geometry.Zone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by boris on 09.12.16.
  */
 public class Main {
 
-    public static void main (String ... args) {
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
 
+    public static void main(String... args) throws InstantiationException, IllegalAccessException {
+
+        ClassLoader mainClassLoader = Main.class.getClassLoader();
+        BIMLoader<BIMExt> bimLoader = new BIMLoader<>(mainClassLoader.
+                getResourceAsStream("Stand-v1.2.json"), BIMExt.class);
+
+        BIMExt bim = bimLoader.getBim();
+        bim.getRoom(0).getZone(0);
+
+        System.out.println(bim);
     }
 }
