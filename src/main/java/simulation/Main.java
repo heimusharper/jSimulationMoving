@@ -35,6 +35,9 @@ import json.geometry.BIMLoader;
 import json.geometry.Zone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import server.TCPServer;
+
+import java.io.IOException;
 
 /**
  * Created by boris on 09.12.16.
@@ -44,14 +47,21 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws InstantiationException, IllegalAccessException {
-
+        // BIM
         ClassLoader mainClassLoader = Main.class.getClassLoader();
         BIMLoader<BIMExt> bimLoader = new BIMLoader<>(mainClassLoader.
                 getResourceAsStream("Stand-v1.2.json"), BIMExt.class);
+
+        // Set data to bus
+        DBus.setRawJson(bimLoader.getRawJson());
 
         BIMExt bim = bimLoader.getBim();
         bim.getRoom(0).getZone(0);
 
         System.out.println(bim);
+
+        // TCP_SERVER
+        log.info("Start tcp server");
+        new TCPServer().start();
     }
 }
