@@ -33,9 +33,10 @@ import java.util.ArrayList;
  * Класс, описывающий помещение.
  * Каждое помещение, в свою очередь, состоит из зон.
  *
+ * @param <Z> Класс, расширенный {@link Zone}
  * @author mag
  */
-public class Room {
+public abstract class Room<Z extends Zone> {
 
     /**
      * Наименование помещения
@@ -100,13 +101,13 @@ public class Room {
     /**
      * Список зон в данном помещении
      */
-    private ArrayList<Zone> zones;
+    private ArrayList<Z> zones;
 
     @Override
     public String toString() {
-        return "Room{" + "name='" + name + '\'' + ", id='" + id + '\'' + ", " +
-                "ceilingHeight=" + ceilingHeight + ", fireType=" + fireType +
-                ", numOfPeople=" + numOfPeople + ", note='" + note + '\''  +
+        return "Room{" + "name='" + name + '\'' + ", id='" + id + '\'' + ", "
+                + "ceilingHeight=" + ceilingHeight + ", fireType=" + fireType
+                + ", numOfPeople=" + numOfPeople + ", note='" + note + '\'' +
                 ", zones=" + zones + '}';
     }
 
@@ -119,6 +120,7 @@ public class Room {
 
     /**
      * Позволяет сменить название помещения
+     *
      * @param name - название помещения
      */
     public void setName(String name) {
@@ -143,17 +145,18 @@ public class Room {
 
     /**
      * Позволяет изменить высоту помещения
+     *
      * @param ceilingHeight - высота помещения. Нельзя задать значение <= 0
      */
     public void setCeilingHeight(double ceilingHeight) {
-        if (ceilingHeight <= 0) throw new NumberFormatException("Warning! You" +
-                " can not ceiling height set to 0");
+        if (ceilingHeight <= 0)
+            throw new NumberFormatException("Warning! You" + " can not ceiling height set to 0");
         this.ceilingHeight = ceilingHeight;
     }
 
     /**
      * @return Тип пожарной нагрузки
-     *
+     * <p>
      * <ol>
      * <li>Жилые помещения гостиниц, общежитий и т. д.</li>
      * <li>Столовая, буфет, зал ресторана</li>
@@ -178,9 +181,10 @@ public class Room {
 
     /**
      * Позволяет задать тип пожарной нагрузки
+     *
      * @param fireType - тип пожарной нагрузки
      */
-    public void setFireType(int fireType) {
+    public void setFireType(final int fireType) {
         this.fireType = fireType;
     }
 
@@ -193,17 +197,18 @@ public class Room {
 
     /**
      * Позволяет установить количество людей в помещении
+     *
      * @param numOfPeople - количество людей. Не может быть меньше нуля
      */
-    public void setNumOfPeople(int numOfPeople) {
-        if (numOfPeople < 0) throw new NumberFormatException("Warning! You" +
-                " can not number of people set to -" + numOfPeople);
+    public void setNumOfPeople(final int numOfPeople) {
+        if (numOfPeople < 0)
+            throw new NumberFormatException("Warning! You" + " can not number of people set to -" + numOfPeople);
         this.numOfPeople = numOfPeople;
     }
 
     /**
      * @return true - если в помещении нет людей <br>
-     *          false - если в помещении есть люди
+     * false - если в помещении есть люди
      */
     public boolean isEmpty() {
         return numOfPeople == 0;
@@ -218,9 +223,10 @@ public class Room {
 
     /**
      * Позволяет изменить описание
+     *
      * @param note - текст
      */
-    public void setNote(String note) {
+    public void setNote(final String note) {
         this.note = note;
     }
 
@@ -228,28 +234,28 @@ public class Room {
      * @param i - кольца
      * @param j - точки
      * @param k - x, y, z
-     * @return  Геометрия всего помещения.<br>
-     *          геометрия целого помещения. (В зонах приводится геометрия отдельных зон)
+     * @return Геометрия всего помещения.<br>
+     * геометрия целого помещения. (В зонах приводится геометрия отдельных зон)
      */
-    public double getXyz(int i, int j, int k) {
+    public double getXyz(final int i, final int j, final int k) {
         return xyz[i][j][k];
     }
 
     /**
      * @param j - точки
      * @param k - x, y, z
-     * @return  Геометрия всего помещения, считая, что отсутствуют
+     * @return Геометрия всего помещения, считая, что отсутствуют
      * внутренние кольца<br>
      * геометрия целого помещения. (В зонах приводится геометрия отдельных зон)
      */
-    public double getXyz(int j, int k) {
+    public double getXyz(final int j, final int k) {
         return xyz[0][j][k];
     }
 
     /**
      * @return true - если в геометрии помещения имеются внутренние кольца <br>
-     *          false - если в геометрии помещения отсутствуют внутренние
-     *          кольца <br>
+     * false - если в геометрии помещения отсутствуют внутренние
+     * кольца <br>
      * Внутреннее кольцо - нерасчетная област внутри помещения (например:
      * колонны посреди помещения)
      */
@@ -258,7 +264,7 @@ public class Room {
     }
 
     /**
-     * @return  Геометрия всего помещения. Трехмерный массив
+     * @return Геометрия всего помещения. Трехмерный массив
      * [кольца][точки][x,y,z] <br>
      * геометрия целого помещения. (В зонах приводится геометрия отдельных зон)
      */
@@ -269,7 +275,7 @@ public class Room {
     /**
      * @return Список всех зон
      */
-    public ArrayList<Zone> getZones() {
+    public ArrayList<Z> getZones() {
         return zones;
     }
 
@@ -277,7 +283,7 @@ public class Room {
      * @param i - номер зоны
      * @return i-тую зону, которая содержится в помещении
      */
-    public Zone getZone(int i) {
+    public Z getZone(final int i) {
         return zones.get(i);
     }
 }
