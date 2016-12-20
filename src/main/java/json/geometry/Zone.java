@@ -38,9 +38,9 @@ import java.util.ArrayList;
 /**
  * Класс, описывающий зону внутри помещения
  *
- * @param <L> Класс расширенный {@link Light}
- * @param <S> Класс расширенный {@link Sensor}
- * @param <P> Класс расширенный {@link Speaker}
+ * @param <L> Класс, расширенный {@link Light}
+ * @param <S> Класс, расширенный {@link Sensor}
+ * @param <P> Класс, расширенный {@link Speaker}
  * @author mag
  */
 public abstract class Zone<L extends Light, S extends Sensor, P extends Speaker> {
