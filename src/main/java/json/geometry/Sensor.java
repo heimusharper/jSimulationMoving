@@ -32,7 +32,7 @@ package json.geometry;
  *
  * @author mag
  */
-public class Sensor {
+public abstract class Sensor {
     /**
      * Идетнификатор сенсора в формате UUID. <br>
      * <hr>
