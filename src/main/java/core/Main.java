@@ -29,6 +29,8 @@ package core;
 
 import json.extendetGeometry.BIMExt;
 import json.geometry.BIMLoader;
+import simulation.Moving;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import bus.DBus;
@@ -55,6 +57,9 @@ public class Main {
         BIMExt bim = bimLoader.getBim();
         bim.getRoom(0).getZone(0);
 
+        Moving m = new Moving(bim);
+        m.start();
+        
         System.out.println(bim);
 
         // TCP_SERVER
