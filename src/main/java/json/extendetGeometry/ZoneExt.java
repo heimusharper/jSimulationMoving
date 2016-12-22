@@ -27,10 +27,41 @@
 
 package json.extendetGeometry;
 
+import java.util.ArrayList;
+
 import json.geometry.Zone;
 
 /**
  * Created by boris on 17.12.16.
  */
 public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
+    
+    private int idInt;
+    private ArrayList<TransitionExt> transitions;
+
+    public int getIdInt() {
+        return idInt;
+    }
+
+    public void setIdInt(int idInt) {
+        this.idInt = idInt;
+    }
+
+    public void addTransition(TransitionExt t) {
+        transitions.add(t);
+    }
+    
+    public ArrayList<TransitionExt> getTransitions() {
+        return transitions;
+    }
+    
+    public TransitionExt getTransition(int i) {
+        return transitions.get(i);
+    }
+
+    public void setTransitions(ArrayList<TransitionExt> transitions) {
+        this.transitions = transitions;
+    }
+    
+    
 }
