@@ -55,31 +55,26 @@ public class BIMLoader<B extends BIM> {
      * Конструктор загрузчика пространственно-информационной модели здания.
      *
      * @param is    поток для чтения
-     * @param clazz класс, описывающий структуру здания. Обязательно должен
-     *              быть расширением {@link BIM}
+     * @param clazz класс, описывающий структуру здания. Обязательно должен быть
+     *              расширением {@link BIM}
      */
     public BIMLoader(final InputStream is, final Class<B> clazz) {
         final String className = clazz.getName();
 
-        //ToDo: Следующий блок можно закоментить, подтому что Gson.fromJson сам вернет новый объект
-        try {
-            bim = clazz.newInstance(); // Инициализация нового объекта
-            log.info("Created instance for class {}", clazz.getName());
-        } catch (InstantiationException | IllegalAccessException e) {
-            log.error("Fail! Can not create new instance of class {}", className, e);
-        }
-
-        log.info("Read json data from stream");
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(is))) {
+        log.info("Start read json data from stream");
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(is))) {
             String s;
-            while ((s = in.readLine()) != null) res += s;
+            while ((s = br.readLine()) != null) res += s;
 
             checkResults(res);
 
             bim = new Gson().fromJson(res, clazz); // Парсинг *.json
-            log.info("Successful parse json to {} structure", className);
+            log.info("Successful created instance for class {} and parse "
+                    + "json", className);
         } catch (final IOException e) {
-            log.error("Fail: parse json to {} structure. Any problems: ", className, e);
+            log.error("Fail: parse json to {} structure. Any problems: ",
+                    className, e);
         }
     }
 
@@ -90,8 +85,11 @@ public class BIMLoader<B extends BIM> {
      */
     private static void checkResults(String res) {
         if (res.isEmpty()) {
-            // Если файл пустой, то завершаем программу с
-            // кодом ошибки 1, и выводим сообщение об ошибке
+            /*
+              Если файл пустой, то завершаем программу с
+              кодом ошибки {@link ExitCode.FILE_EMPTY}, и выводим сообщение об
+              ошибке
+             */
             log.error("File *.json is empty", new Error());
             System.exit(ExitCode.FILE_EMPTY);
         }
