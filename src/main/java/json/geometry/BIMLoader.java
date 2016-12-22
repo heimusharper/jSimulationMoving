@@ -61,6 +61,7 @@ public class BIMLoader<B extends BIM> {
     public BIMLoader(final InputStream is, final Class<B> clazz) {
         final String className = clazz.getName();
 
+        //ToDo: Следующий блок можно закоментить, подтому что Gson.fromJson сам вернет новый объект
         try {
             bim = clazz.newInstance(); // Инициализация нового объекта
             log.info("Created instance for class {}", clazz.getName());
