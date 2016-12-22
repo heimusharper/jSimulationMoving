@@ -36,10 +36,10 @@ public class Direction {
     /**
      * Направление движения - вверх
      */
-    public static final int UP = 1;
+    public static final int UP = 3;
 
     /**
      * Направление движения - вниз
      */
-    public static final int DOWN = -1;
+    public static final int DOWN = -3;
 }
