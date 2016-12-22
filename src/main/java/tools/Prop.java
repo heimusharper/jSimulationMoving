@@ -43,9 +43,15 @@ import java.util.Properties;
 public class Prop {
     private static final Logger log = LoggerFactory.getLogger(Prop.class);
 
+    // Название файла с настройками
     private static final String FILE_NAME = "config.properties";
+    // Порт, на котором работает сервер
     private static int serverPort;
 
+    /*
+     * Чтение файла с настройками происходит один раз при первом вызове
+     * класса Prop
+     */
     static {
         try (final InputStream is = Prop.class.getClassLoader()
                 .getResourceAsStream(FILE_NAME)) {
@@ -68,6 +74,9 @@ public class Prop {
         return serverPort;
     }
 
+    /**
+     * Класс, в котором описаны поля файла с настройками
+     */
     private class Fields {
         private static final String RINTD_TCP_SERVER_PORT = "rintd.tcp.server.port";
     }
