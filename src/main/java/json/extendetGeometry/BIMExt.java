@@ -31,6 +31,7 @@ import json.geometry.BIM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,11 +56,11 @@ public class BIMExt extends BIM<RoomExt, TransitionExt> {
     /**
      * Список зон в здании
      */
-    private List<ZoneExt>       zones;
+    private HashMap<String, ZoneExt> zones;
     /**
      * Список эвакуационных выходов
      */
-    private List<TransitionExt> exitsTransition;
+    private List<TransitionExt>      exitsTransition;
 
     /**
      * Количество людей в здании
@@ -84,10 +85,13 @@ public class BIMExt extends BIM<RoomExt, TransitionExt> {
     /**
      * @return Список зон
      */
-    public List<ZoneExt> getZones() {
-        return zones == null ?
-                getZonesStream().collect(Collectors.toList()) :
-                zones;
+    public HashMap<String, ZoneExt> getZones() {
+        if (zones != null) return zones;
+
+        List<ZoneExt> zonesList = getZonesStream().collect(Collectors.toList());
+        zonesList.forEach(z -> zones.put(z.getId(), z));
+
+        return zones;
     }
 
     /**
