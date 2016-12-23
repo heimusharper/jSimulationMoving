@@ -30,7 +30,18 @@ package json.extendetGeometry;
 import json.geometry.Transition;
 
 /**
+ * Класс, расширяющий базовый {@link Transition}.
+ * Предназначен для полей, которые не входят в *.json файл с геометрией
+ * <p>
  * Created by boris on 17.12.16.
  */
 public class TransitionExt extends Transition {
+
+    /**
+     * @return true - если одна из зон, которые соединяет проем, NULL
+     */
+    public boolean hasEmptyZone() {
+        return getZoneAId() == null || getZoneBId() == null;
+    }
+
 }
