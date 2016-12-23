@@ -29,8 +29,6 @@ package json.extendetGeometry;
 
 import json.geometry.Zone;
 
-import java.util.List;
-
 /**
  * Безопасная зона. Выделена в отделный объект для удобства и разделения
  * функционала (есть поля, которые не нужны классу {@link ZoneExt}).
@@ -40,13 +38,6 @@ import java.util.List;
  */
 public class SafetyZone extends ZoneExt {
 
-    /* Количество выходов, которые соединяют безопасную зону и здание (т.е.
-    количество эвакуационных выходов) */
-    private long numOfExits;
-
-    /* Список дверей, которые содиняют безопаную зону и здание */
-    private List<?> transitions;
-
     // Инициализация параметров
     {
         setId("sz0");
@@ -54,42 +45,6 @@ public class SafetyZone extends ZoneExt {
         setNumOfPeople(0);
         setNote("Safety Zone");
         setType(Zone.FLOOR);
-    }
-
-    /**
-     * @return Количество проемов, которые соединяют безопасную зону и здание
-     * (количество эвакуационных выходов)
-     */
-    public long getNumOfExits() {
-        return numOfExits;
-    }
-
-    /**
-     * Позволяет задать количество проемов, которые соединяют безопасную
-     * зону и здание (количество эвакуационных выходов)
-     *
-     * @param numOfExits - количество проемов
-     */
-    public void setNumOfExits(long numOfExits) {
-        this.numOfExits = numOfExits;
-    }
-
-    /**
-     * @return Список проемов, которые соединяют безопасную зону и здание
-     * (количество эвакуационных выходов)
-     */
-    public List<?> getTransitions() {
-        return transitions;
-    }
-
-    /**
-     * Позволяет задать список проемов, которые соединяют безопасную
-     * зону и здание (количество эвакуационных выходов)
-     *
-     * @param transitions - список проемов
-     */
-    public void setTransitions(List<?> transitions) {
-        this.transitions = transitions;
     }
 
 }
