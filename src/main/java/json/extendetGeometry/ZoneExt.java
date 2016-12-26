@@ -34,6 +34,8 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import json.geometry.Zone;
 
+import java.util.ArrayList;
+
 /**
  * Класс, расширяющий базовый {@link Zone}.
  * Предназначен для полей, которые не входят в *.json файл с геометрией
@@ -41,23 +43,67 @@ import json.geometry.Zone;
  * Created by boris on 17.12.16.
  */
 public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
-    private double heightDifference = -1;
+    /**
+     * Минимальное и максимальное значение по оси Z
+     */
+    private double zMin = Double.MAX_VALUE;
+    private double zMax = -Double.MIN_VALUE;
+    /**
+     * Направление движения по лестнице. (+3 - вверх, -3 - вниз)
+     */
+    private int    direction;
+    /**
+     * Номер эвакуационного выхода, в который идет движение из текущего
+     * помещения
+     */
+    private int    numberExit;
+    /**
+     * Индекс, которые равен такому же индексу эвакуационного выхода. Признак
+     * того, что помещение уже обрботано
+     */
+    private int    nTay;
+    /**
+     * Время движения до эвакуационного выхода
+     */
+    private double timeToReachExit;
+
+    /**
+     * Списко дверей, которые соединяются с зоной
+     */
+    private ArrayList<TransitionExt> transitionList = new ArrayList<>();
+
+    /**
+     * @return Минимальное значение по оси Z в пределах зоны
+     */
+    public double getMinZ() {
+        // Если однажды посчитали, в дальнейшем возвращаем
+        if (zMin == Double.MAX_VALUE) return zMin;
+
+        for (int i = 0; i < getXyz().length; i++) {
+            final double z = getXyz(0, i, 2);
+            if (z <= zMin) zMin = z;
+        }
+        return zMin;
+    }
+
+    /**
+     * @return Максимальное значение по оси Z в пределах зоны
+     */
+    public double getMaxZ() {
+        if (zMax == -Double.MIN_VALUE) return zMax;
+
+        for (int i = 0; i < getXyz().length; i++) {
+            final double z = getXyz(0, i, 2);
+            if (z >= zMax) zMax = z;
+        }
+        return zMax;
+    }
 
     /**
      * Перепад высот в пределах зоны
      */
     public double getHeightDifference() {
-        if (heightDifference > -1) return heightDifference;
-
-        double zMin = Double.MAX_VALUE;
-        double zMax = -Double.MIN_VALUE;
-        for (int i = 0; i < getXyz().length; i++) {
-            final double z = getXyz(0, i, 2);
-            if (z >= zMax) zMax = z;
-            if (z <= zMin) zMin = z;
-        }
-        heightDifference = zMax - zMin;
-        return heightDifference;
+        return getMaxZ() - getMinZ();
     }
 
     /**
@@ -113,5 +159,90 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
         Polygon mP = getPolygon();
         if (mP != null) return mP.getLength();
         else return 0;
+    }
+
+    /**
+     * Позволяет задать направление движения по лестнице
+     *
+     * @param direction -3 - вниз  {@link Direction#DOWN}, +3 - вверх {@link
+     *                  Direction#UP}
+     */
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * Позволяет увеличить количество людей в зоне на заданное число
+     *
+     * @param people - количество людей
+     */
+    public void addPeople(double people) {
+        setNumOfPeople(getNumOfPeople() + people);
+    }
+
+    /**
+     * Позволяет удалить заданное количество людей из зоны
+     *
+     * @param people количество людей
+     */
+    public void removePeople(double people) {
+        setNumOfPeople(getNumOfPeople() - people);
+    }
+
+    public void setNumberExit(int numberExit) {
+        this.numberExit = numberExit;
+    }
+
+    public void setNTay(int nTay) {
+        this.nTay = nTay;
+    }
+
+    /**
+     * Позволяет установить время достижения эвакуационного выхода из
+     * текущего помещения
+     *
+     * @param timeToReachExit время
+     */
+    public void setTimeToReachExit(double timeToReachExit) {
+        this.timeToReachExit = timeToReachExit;
+    }
+
+    /**
+     * @return Списко дверей, которые соединятются с текущей зоной
+     */
+    public ArrayList<TransitionExt> getTransitionList() {
+        return transitionList;
+    }
+
+    /**
+     * @param i номер двери (индекс списка)
+     *
+     * @return Дверь по индексу ({@link TransitionExt}
+     */
+    public TransitionExt getTransition(int i) {
+        return getTransitionList().get(i);
+    }
+
+    /**
+     * @param tUuid строковый идентификатор двери
+     *
+     * @return Дверь по uuid ({@link TransitionExt}
+     */
+    public TransitionExt getTransition(String tUuid) {
+        for (TransitionExt t : getTransitionList()) {
+            if (t.getId().equals(tUuid)) return t;
+        }
+        throw new NullPointerException(
+                "The Transition is not find. Incorrect UUID or the Transition"
+                        + " does not exist");
+    }
+
+    /**
+     * Позволяет добавить дверь в список
+     *
+     * @param t экземпляр класса {@link TransitionExt}
+     */
+    void addTransition(TransitionExt t) {
+        getTransitionList().add(t);
     }
 }
