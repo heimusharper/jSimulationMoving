@@ -38,10 +38,76 @@ import json.geometry.Transition;
 public class TransitionExt extends Transition {
 
     /**
+     * Количество людей, прошедших через дверь
+     */
+    private double numOfPeoplePassing;
+    /**
+     * Время обработки портала в единицах tay, мин
+     */
+    private int    nTay;
+    /**
+     * Номер выхода. Этот номер присваивается эвакуационным выходам в порядке
+     * их использования
+     */
+    private int    numberExit;
+
+    /**
      * @return true - если одна из зон, которые соединяет проем, NULL
      */
-    public boolean hasEmptyZone() {
+    public boolean hasNullZone() {
         return getZoneAId() == null || getZoneBId() == null;
     }
 
+    /**
+     * Позволяет увеличить счетчик количества людей, которые прошли через дверь
+     *
+     * @param people количество людей
+     */
+    public void addPassingPeople(double people) {
+        setNumOfPeoplePassing(getNumOfPeoplePassing() + people);
+    }
+
+    /**
+     * @return Количество людей, прошедших через дверь
+     */
+    public double getNumOfPeoplePassing() {
+        return numOfPeoplePassing;
+    }
+
+    /**
+     * Позволяет изменить количество людей, прошедших через дверь
+     *
+     * @param numOfPeoplePassing - количество людей
+     */
+    public void setNumOfPeoplePassing(double numOfPeoplePassing) {
+        this.numOfPeoplePassing = numOfPeoplePassing;
+    }
+
+    public void nTayIncrease() {
+        setNTay(getNTay() + 1);
+    }
+
+    public int getNTay() {
+        return nTay;
+    }
+
+    public void setNTay(int nTay) {
+        this.nTay = nTay;
+    }
+
+    /**
+     * @return Номер эвакуационного выхода
+     */
+    public int getNumberExit() {
+        return numberExit;
+    }
+
+    /**
+     * Позволяет присвоить номер эвакуационному выходу
+     *
+     * @param numberExit номер
+     */
+    public void setNumberExit(int numberExit) {
+        this.numberExit = numberExit;
+    }
 }
