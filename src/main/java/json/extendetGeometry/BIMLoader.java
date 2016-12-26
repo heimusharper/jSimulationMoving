@@ -1,34 +1,35 @@
-/******************************************************************************
- Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
+/*******************************************************************************
+ * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
+ *
+ * Project website:       http://eesystem.ru
+ * Organization website:  http://rintd.ru
+ *
+ * --------------------- DO NOT REMOVE THIS NOTICE -----------------------------
+ * BIMLoader is part of jSimulationMoving.
+ *
+ * jSimulationMoving is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jSimulationMoving is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jSimulationMoving. If not, see <http://www.gnu.org/licenses/>.
+ * -----------------------------------------------------------------------------
+ *
+ * This code is in BETA; some features are incomplete and the code
+ * could be written better.
+ ******************************************************************************/
 
- Project website:       http://eesystem.ru
- Organization website:  http://rintd.ru
-
- --------------------- DO NOT REMOVE THIS NOTICE ------------------------------
- This file is part of SimulationMoving.
-
- SimulationMoving is free software: you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- SimulationMoving is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with SimulationMoving. If not, see <http://www.gnu.org/licenses/>.
- ------------------------------------------------------------------------------
-
- This code is in BETA; some features are incomplete and the code
- could be written better.
- *****************************************************************************/
-
-package json.geometry;
+package json.extendetGeometry;
 
 import com.google.gson.Gson;
 import errors.ExitCode;
+import json.geometry.BIM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
