@@ -29,6 +29,8 @@ package json.extendetGeometry;
 
 import json.geometry.Zone;
 
+import java.util.ArrayList;
+
 /**
  * Безопасная зона. Выделена в отделный объект для удобства и разделения
  * функционала (есть поля, которые не нужны классу {@link ZoneExt}).
@@ -38,6 +40,8 @@ import json.geometry.Zone;
  */
 public class SafetyZone extends ZoneExt {
 
+    private ArrayList<Double> minsZ = new ArrayList<>();
+
     // Инициализация параметров
     {
         setId("sz0");
@@ -45,6 +49,26 @@ public class SafetyZone extends ZoneExt {
         setNumOfPeople(0);
         setNote("Safety Zone");
         setType(Zone.FLOOR);
+    }
+
+    /**
+     * Позволяет добавить новую точку в зону. Считается, что безопасная зона
+     * находится на одном уровне с ближайшей к выходу.
+     *
+     * @param z - координата оси Z
+     */
+    public void addMinZ(double z) {
+        minsZ.add(z);
+    }
+
+    /**
+     * @param tid номер двери из списка эвакуационных выходов
+     *
+     * @return значение уровня, на котором находится безопасная зона для
+     * заданного выхода
+     */
+    public double getMinZ(int tid) {
+        return minsZ.get(tid);
     }
 
 }
