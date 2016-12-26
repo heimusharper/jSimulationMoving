@@ -27,14 +27,12 @@
 package core;
 
 
+import bus.DBus;
 import json.extendetGeometry.BIMExt;
-import json.geometry.BIMLoader;
-import simulation.Moving;
-
+import json.extendetGeometry.BIMLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import bus.DBus;
-import tcp.server.TCPServer;
+import simulation.Moving;
 
 /**
  * Точка входа
@@ -54,16 +52,11 @@ public class Main {
         // Загрузка данных в шину
         DBus.setRawJson(bimLoader.getRawJson());
 
-        BIMExt bim = bimLoader.getBim();
-        bim.getRoom(0).getZone(0);
-
-        Moving m = new Moving(bim);
-        m.start();
+        Moving m = new Moving(bimLoader.getBim());
+        m.run();
         
-        System.out.println(bim);
-
         // TCP_SERVER
-        log.info("Start tcp server");
-        new TCPServer().start();
+        /*log.info("Start tcp server");
+        new TCPServer().start();*/
     }
 }
