@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
  *
  * Project website:       http://eesystem.ru
@@ -23,9 +23,9 @@
  *
  * This code is in BETA; some features are incomplete and the code
  * could be written better.
- ******************************************************************************/
+ */
 
-package tcp.server;
+package tcp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
