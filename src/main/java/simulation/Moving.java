@@ -33,7 +33,7 @@ import java.math.RoundingMode;
 /**
  * Класс моделирования
  */
-public class Moving {
+public class Moving implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
     private BIMExt bim;
 
@@ -41,7 +41,9 @@ public class Moving {
         this.bim = bim;
     }
 
+    @Override
     public void run() {
+        log.info("Running thread for simulation moving");
         // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         int acceptRepeat = 500;
         // Интервал моделирования, миллисек (minimum 150ms)
@@ -62,6 +64,8 @@ public class Moving {
 
             timeModel += tay * time * 60;
         }
+
+        log.info("Finish simulation moving");
     }
 
     /**

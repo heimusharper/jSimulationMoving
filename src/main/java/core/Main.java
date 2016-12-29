@@ -52,9 +52,9 @@ public class Main {
         // Загрузка данных в шину
         DBus.setRawJson(bimLoader.getRawJson());
 
-        Moving m = new Moving(bimLoader.getBim());
-        m.run();
-        
+        Thread simulationMoving = new Thread(new Moving(bimLoader.getBim()));
+        simulationMoving.start();
+
         // TCP_SERVER
         /*log.info("Start tcp server");
         new TCPServer().start();*/
