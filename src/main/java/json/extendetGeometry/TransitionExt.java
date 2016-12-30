@@ -36,13 +36,17 @@ import json.geometry.Transition;
  * Created by boris on 17.12.16.
  */
 public class TransitionExt extends Transition {
-
+    {
+        setNumOfPeoplePassing(0);
+        setNTay(0);
+    }
     /**
      * Количество людей, прошедших через дверь
      */
     private double numOfPeoplePassing;
     /**
-     * Время обработки портала в единицах tay, мин
+     * Время обработки портала N, штуки  (в единицах tay, мин)
+     * Признак обработки.Если nTay совпадают, то в данный момент оба портала уже обработаны 
      */
     private int    nTay;
     /**

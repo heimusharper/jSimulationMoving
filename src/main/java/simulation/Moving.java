@@ -42,38 +42,19 @@ public class Moving {
     }
 
     public void run() {
-        // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
+        
+        Traffic traffic = new Traffic(bim);         
+      // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         int acceptRepeat = 500;
-        // Интервал моделирования, миллисек (minimum 150ms)
-        // TODO Требует корректировки
-        long timeInterval = 10000;
-        float tay = getTay(); // Шаг моделирования
-        // Высчитываем интервал моделирования в зависимости от timeInterval
-        int time = new BigDecimal(((timeInterval / 1000f) / 60f) / tay)
-                .setScale(0, RoundingMode.UP).intValue();
 
-        double timeModel = 0.0; // Время эвакуации, мин
 
-        Traffic traffic = new Traffic(bim, tay, time);
-
-        // Главный цикл моделирования
-        for (int i = 0; i < acceptRepeat; i++) {
-            traffic.footTraffic();
-
-            timeModel += tay * time * 60;
+        double timeModel = 0.0;      // Текущее время моделирования эвакуации, c
+        double time = 10;           // Интервал моделирования эвакуации, c
+     
+        for (int i = 0; i < acceptRepeat; i++) { 
+            traffic.footTraffic(time);        
+            timeModel +=  time;
         }
     }
 
-    /**
-     * @return tay - шаг моделирования
-     */
-    private float getTay() {
-        float hxy = 0.5f; // характерный размер области, м
-        float ktay = 0.5f; // коэффициент (< 1) уменьшения шага по времени
-        // для устойчивости расчетов
-        float vmax = 100f; // максимальная скорость эвакуации, м/мин
-
-        // Шаг моделирования, мин
-        return (hxy / vmax) * ktay;
-    }
 }

@@ -40,25 +40,35 @@ import java.util.ArrayList;
  * Класс, расширяющий базовый {@link Zone}.
  * Предназначен для полей, которые не входят в *.json файл с геометрией
  * <p>
- * Created by boris on 17.12.16.
+ * Created by boris on 17.12.16.     Modification of 27.12.2016
  */
 public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
+    
+    {
+      setPermeabilityle(1);
+      setNTay(0);
+    }
+    
     /**
      * Минимальное и максимальное значение по оси Z
      */
     private double zMin = Double.MAX_VALUE;
     private double zMax = -Double.MIN_VALUE;
     /**
+     * Проницаемость зоны. (0 - зона не проницаема для людей, 1- полностью проницаема)
+     */
+    private double  permeability;
+    /**
      * Направление движения по лестнице. (+3 - вверх, -3 - вниз)
      */
-    private int    direction;
+    private int    direction; 
     /**
      * Номер эвакуационного выхода, в который идет движение из текущего
      * помещения
      */
     private int    numberExit;
     /**
-     * Индекс, которые равен такому же индексу эвакуационного выхода. Признак
+     * Количество проходов по циклу с временным шагом tay. Признак
      * того, что помещение уже обрботано
      */
     private int    nTay;
@@ -170,7 +180,19 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
     public void setDirection(int direction) {
         this.direction = direction;
     }
-
+    /**
+     * Позволяет изменить проницаемость зоны 
+     *
+     * @param permeab - проницаемость зоны ( от 0 до 1)
+     */
+    public void setPermeabilityle(double permeab) {
+        this.permeability = permeab;
+    }
+    
+    public double getPermeabilityle() {
+        return this.permeability;
+    }
+    
     /**
      * Позволяет увеличить количество людей в зоне на заданное число
      *
@@ -197,6 +219,16 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
         this.nTay = nTay;
     }
 
+    public void nTayIncrease() {
+        setNTay(getNTay() + 1);
+    }
+
+    public int getNTay() {
+        return nTay;
+    }
+
+    
+    
     /**
      * Позволяет установить время достижения эвакуационного выхода из
      * текущего помещения
@@ -205,6 +237,10 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     public void setTimeToReachExit(double timeToReachExit) {
         this.timeToReachExit = timeToReachExit;
+    }
+    
+    public double getTimeToReachExit() {
+        return this.timeToReachExit;
     }
 
     /**
