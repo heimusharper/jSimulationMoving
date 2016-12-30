@@ -23,38 +23,39 @@
 
 package simulation;
 
-import json.extendetGeometry.BIMExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import json.extendetGeometry.BIMExt;
 
 /**
  * Класс моделирования
  */
-public class Moving {
+public class Moving implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
-    private BIMExt bim;
+    private BIMExt              bim;
 
     public Moving(BIMExt bim) {
         this.bim = bim;
     }
 
+    @Override
     public void run() {
-        
-        Traffic traffic = new Traffic(bim);         
-      // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
+        Traffic traffic = new Traffic(bim);
+        // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
+        log.info("Running thread for simulation moving");
+        // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         int acceptRepeat = 500;
 
+        double timeModel = 0.0; // Текущее время моделирования эвакуации, c
+        double time = 10; // Интервал моделирования эвакуации, c
 
-        double timeModel = 0.0;      // Текущее время моделирования эвакуации, c
-        double time = 10;           // Интервал моделирования эвакуации, c
-     
-        for (int i = 0; i < acceptRepeat; i++) { 
-            traffic.footTraffic(time);        
-            timeModel +=  time;
+        for (int i = 0; i < acceptRepeat; i++) {
+            traffic.footTraffic(time);
+            timeModel += time;
         }
+
+        log.info("Finish simulation moving");
     }
 
 }
