@@ -5,7 +5,7 @@
  * Organization website:  http://rintd.ru
  *
  * --------------------- DO NOT REMOVE THIS NOTICE -----------------------------
- * EventHandler is part of jSimulationMoving.
+ * DangerousFactorOfFireEvent is part of jSimulationMoving.
  *
  * jSimulationMoving is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,26 +27,20 @@
 
 package tools;
 
-import bus.EBus;
-import com.google.common.eventbus.Subscribe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Класс обработки событий от mesh-сети
+ * Обработчик событиый об изменении опасных факторов пожара
  * <p>
  * Created by boris on 30.12.16.
  */
-public class EventHandler {
+public class DangerousFactorOfFireEvent {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(EventHandler.class);
+    private int typeOfDangerousFactorOfFire;
 
-    public static void registeredOnBus() {
-        EBus.register(new EventHandler());
+    public DangerousFactorOfFireEvent(int typeOfDangerousFactorOfFire) {
+        this.typeOfDangerousFactorOfFire = typeOfDangerousFactorOfFire;
     }
 
-    @Subscribe private void swither(DangerousFactorOfFireEvent event) {
-        log.debug("{}", event.getTypeOfDangerousFactorOfFire());
+    public int getTypeOfDangerousFactorOfFire() {
+        return typeOfDangerousFactorOfFire;
     }
 }

@@ -33,6 +33,7 @@ import json.extendetGeometry.BIMLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulation.Moving;
+import tcp.TCPClient;
 
 /**
  * Точка входа
@@ -58,5 +59,9 @@ public class Main {
         // TCP_SERVER
         /*log.info("Start tcp server");
         new TCPServer().start();*/
+
+        // TCP_CLIENT
+        log.info("Start tcp client");
+        new TCPClient();
     }
 }

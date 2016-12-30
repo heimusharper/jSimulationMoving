@@ -5,7 +5,7 @@
  * Organization website:  http://rintd.ru
  *
  * --------------------- DO NOT REMOVE THIS NOTICE -----------------------------
- * EventHandler is part of jSimulationMoving.
+ * TCPClient is part of jSimulationMoving.
  *
  * jSimulationMoving is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,28 +25,24 @@
  * could be written better.
  */
 
-package tools;
+package tcp;
 
 import bus.EBus;
-import com.google.common.eventbus.Subscribe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import tools.DangerousFactorOfFireEvent;
+import tools.EventHandler;
 
 /**
- * Класс обработки событий от mesh-сети
+ * TCP клиент. Ждет внешних команд и сигналы об изменениях показаний сенсоров
  * <p>
- * Created by boris on 30.12.16.
+ * Created by boris on 29.12.16.
  */
-public class EventHandler {
+public class TCPClient {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(EventHandler.class);
-
-    public static void registeredOnBus() {
-        EBus.register(new EventHandler());
+    public TCPClient() {
+        EventHandler.registeredOnBus();
+        EBus.post(new DangerousFactorOfFireEvent(5));
     }
 
-    @Subscribe private void swither(DangerousFactorOfFireEvent event) {
-        log.debug("{}", event.getTypeOfDangerousFactorOfFire());
-    }
+    // В этом классе инициализируютс события от сети: изменение температуруы,
+    // состояние датчика
 }

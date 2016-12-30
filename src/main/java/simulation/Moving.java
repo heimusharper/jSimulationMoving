@@ -43,7 +43,7 @@ public class Moving implements Runnable {
 
     @Override
     public void run() {
-        log.info("Running thread for simulation moving");
+        log.info("Running thread with simulation moving");
         // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         int acceptRepeat = 500;
         // Интервал моделирования, миллисек (minimum 150ms)
