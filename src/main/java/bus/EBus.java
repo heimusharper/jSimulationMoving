@@ -28,27 +28,69 @@
 package bus;
 
 import com.google.common.eventbus.EventBus;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Шина событиый {@link EventBus}
  * <p>
  * Initialization-on-demand holder idiom
- *
+ * <p>
  * Created by boris on 15.12.16.
  */
 public class EBus {
 
-    public static class EBusHelper {
-        public static final EventBus BUS_INSTANCE;
+    private static final Logger log = LoggerFactory.getLogger(EBus.class);
+
+    /**
+     * Регистрирует класс (вешает слушателя на шину), в котором есть
+     * методы-обработчики событий
+     *
+     * @param object объект (класса)
+     */
+    public static void register(Object object) {
+        log.debug("Register {} on the EVENT BUS",
+                object.getClass().getSimpleName());
+        EBus.getInstance().register(object);
+    }
+
+    /**
+     * Снимает с регистрации класс с методами-обработчиками событий
+     *
+     * @param object объект (класса)
+     */
+    public static void unregister(Object object) {
+        log.debug("Unregistered {} on the EVENT BUS",
+                object.getClass().getSimpleName());
+        EBus.getInstance().unregister(object);
+    }
+
+    /**
+     * Инициализация события. Сообщение о событии на шину
+     *
+     * @param event сообщение
+     */
+    public static void post(Object event) {
+        log.debug("Post event type of {} class",
+                event.getClass().getSimpleName());
+        EBus.getInstance().post(event);
+    }
+
+    /**
+     * @return Экземпляр шины {@link EventBus}
+     */
+    private static EventBus getInstance() {
+        return EBusHelper.BUS_INSTANCE;
+    }
+
+    private static class EBusHelper {
+        private static final EventBus BUS_INSTANCE;
 
         static {
             BUS_INSTANCE = new EventBus(EBusHelper.class.getName());
-            LoggerFactory.getLogger(EBusHelper.class).info("Create instance bus events");
+            LoggerFactory.getLogger(EBusHelper.class)
+                    .info("Create instance bus events");
         }
     }
 
-    public static EventBus getInstance() {
-        return EBusHelper.BUS_INSTANCE;
-    }
 }
