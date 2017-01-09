@@ -5,7 +5,7 @@
  * Organization website:  http://rintd.ru
  *
  * --------------------- DO NOT REMOVE THIS NOTICE -----------------------------
- * ExitCode is part of jSimulationMoving.
+ * ErrorCode is part of jSimulationMoving.
  *
  * jSimulationMoving is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ package errors;
  *
  * Created by boris on 20.12.16.
  */
-public class ExitCode {
+public class ErrorCode {
     /**
      * Файл, который подвергается парсингу пуст
      */

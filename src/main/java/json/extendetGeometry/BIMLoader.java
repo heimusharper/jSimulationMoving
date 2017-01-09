@@ -28,7 +28,7 @@
 package json.extendetGeometry;
 
 import com.google.gson.Gson;
-import errors.ExitCode;
+import errors.ErrorCode;
 import json.geometry.BIM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,11 +88,11 @@ public class BIMLoader<B extends BIM> {
         if (res.isEmpty()) {
             /*
               Если файл пустой, то завершаем программу с
-              кодом ошибки {@link ExitCode.FILE_EMPTY}, и выводим сообщение об
+              кодом ошибки {@link ErrorCode.FILE_EMPTY}, и выводим сообщение об
               ошибке
              */
             log.error("File *.json is empty", new Error());
-            System.exit(ExitCode.FILE_EMPTY);
+            System.exit(ErrorCode.FILE_EMPTY);
         }
 
         log.info("Successful read json");
