@@ -97,8 +97,8 @@ public class Traffic {
     }
 
     /**
-     * Моделирование Людских потоков по зданию 18/08/2015, 22.12.2016,
-     * 29.12.2016
+     * Моделирование Людских потоков по зданию 18/08/2015, 29.12.2016,
+     * 9.01.2017
      * 
      * @param time
      *            временной интервал моделирования эвакуации в секундах
@@ -140,6 +140,7 @@ public class Traffic {
           SafetyZone safetyZone = this.safetyZone; // Зона безопасности
           for (int ii = 0; ii < NUM_OF_EXITS; ii++) {     // 01
               zoneOut.get(ii).clear();
+   
               // Идентификатор портала на улицу
               TransitionExt exit = exits.get(ii);
               // Ширина проема на улицу
@@ -203,11 +204,8 @@ public class Traffic {
               double dPeople = d2 * dPeopleZone;
               double delta = dPeopleZone - dPeople;
               double ddPeople = (delta > 0) ? dPeople : dPeopleZone;
-
-              // Увеличение людей в безопосной зоне
-              safetyZone.addPeople(ddPeople);
-              // Уменьшение людей в зоне здания
-              _zone.removePeople(ddPeople);
+              safetyZone.addPeople(ddPeople);// Увел. людей в безоп. зоне
+              _zone.removePeople(ddPeople);  
               // Увеличение счетчика людей, прошедших через дверь ii
               exit.addPassingPeople(ddPeople);
               // Признак обработки двери. Увеличение TransitionExt#nTay на
@@ -267,189 +265,102 @@ public class Traffic {
                   System.out.println();
               }
 
-        boolean constDirec = false;
+        boolean evacOutLimit = false;  //ограничитель эвакуации к выходу 
 
-     do {                            // 02 - boolean constDirec = true;
-       if (outstep[ii] == true) {    // outstep[ii] == true  ==2
+   do {                            // constDirec = true;       ==02  
+     if (outstep[ii] == true) {    //    outstep[ii] == true   ==2
            // Выбираем элемент списка, в который будем "засасывать"
            // людей и проверяем на проходимость
-         final ZoneExt zone0 = zoneOut.get(ii).get(k_out[ii]);
+       final ZoneExt receivingArea = zoneOut.get(ii).get(k_out[ii]);
            // Обработка проходимой зоны                     
-         if (zone0.getPermeabilityle() >= CR_PASSABILITY) {//  == 3
+       if (receivingArea.getPermeabilityle() >= CR_PASSABILITY) {  //  == 3
                           // Количество дверей элемента
-          final int numTransitions = zone0.getTransitionList().size(); 
+         final int numTransitions = receivingArea.getTransitionList().size(); 
                           // Обходим все двери зоны
-          for (int iip = 0; iip < numTransitions; iip++) {  //  == 5
+         for (int iip = 0; iip < numTransitions; iip++) {  //  == 5
                           // Идентификатор одной из дверей зоны
-            final TransitionExt _transition = transitions.get(iip); 
+          final TransitionExt exit = transitions.get(iip); 
                           // Портал подлежит обработке
-                if (zone0.getNTay() > _transition.getNTay()) { // ==41
-                 final double lTransition = _transition.getWidth(); // Ширина 
-                                           
-                                    final String idZone1 = _transition
-                                            .getZoneAId(); // Ссылка от портала
-                                                           // на помещение A
-                                    final String idZone2 = _transition
-                                            .getZoneAId(); // Ссылка от портала
-                                                           // на помещение B
-                                    final String idZoneOId = zone0.getId();
+          if (receivingArea.getNTay() > exit.getNTay()) {   //   ==41
+ //          final double lTransition = exit.getWidth(); // Ширина 
+                           // Ссылки от портала 
+           final String idZone1 = exit.getZoneAId();// на помещение A   
+           final String idZone2 = exit.getZoneAId();// на помещение B
+           final String idZoneOId = receivingArea.getId();                     
+           String idZone = (idZone1.equals(idZoneOId))? idZone2 : idZone1;
+           final ZoneExt radiatingArea = zones.get(idZone);
+           
+  //         double ddPeople = procZones(radiatArea, zone0,exit, dxyz, tay);
+  //         private  double procZones(ZoneExt radiatingArea, ZoneExt receivingArea, 
+  //                 TransitionExt exit, double dxyz, double tay)         
+           final int zoneType = radiatingArea.getType();              // тип
+           final double dPeopleZone = radiatingArea.getNumOfPeople(); // кол.людей
+           final double sZone = radiatingArea.getArea();              // Площадь
+           double vZone = Double.NaN;
+           final double dZone = dPeopleZone/sZone;        // плотность, чел/м2  
+           switch (zoneType) {
+             case ZoneExt.FLOOR: vZone = vElem(dZone);  break;
+             case ZoneExt.STAIRS:
+                 final double hElem  = radiatingArea.getMinZ();    // отдающая
+                 final double hElem0 = receivingArea.getMinZ();    // принимающая
+                 final double dh = hElem - hElem0;    // Разница высот зон
+                 if (Math.abs(dh) >= dxyz) {
+                 int direction = (hElem > hElem0)? Direction.DOWN
+                                                 : Direction.UP;
+                 receivingArea.setDirection(direction);
+                 vZone = vElemZ(direction, dZone); }
+                       else vZone = vElem(dZone);
+                  break;
+             default: log.info("Неопределенный (procZones) тип зоны");  break;
+           }
+           final double lTransition = exit.getWidth();     // Ширина проема
+           double vTransition = vElem(lTransition, dZone);
+           final double v = receivingArea.getPermeabilityle()
+                   * Math.min(vZone, vTransition); // Скорость на выходе
+           final double d1 = lTransition * v * tay / sZone;
+           double d2 = (d1 >= 1) ? 1 : d1;
+           final double dPeopl = d2 * dPeopleZone; // Изменение кол.людей
+           final double delta = dPeopleZone - dPeopl; // Отдающая
+               // ddPeople - кол. людей, которые могут быть высосаны  
+           double ddPeople = (delta > 0) ? dPeopl: dPeopleZone; // изменение        
 
-                                    String idZone = (idZone1.equals(idZoneOId))
-                                            ? idZone2 : idZone1;
-                                    // if (zonesList.get(idroom).passability >=
-                                    // Evacuation.CrPassability) { // ==5
-                                    // Обработка проходимой зоны,
-                                    // (высасывание людей)
-
-                                    final ZoneExt _zone = zones.get(idZone);
-                                    final int zoneType = _zone.getType();
-                                    final double dPeopleZone = _zone
-                                            .getNumOfPeople(); // Количество
-                                                               // людей в
-                                                               // соседней
-                                                               // ячейке
-                                    final double sZone = _zone.getArea(); // Площадь
-                                                                          // соседней
-                                                                          // ячейки
-                                    double vZone = Double.NaN;
-
-                                    // Определяем плотность людей в зоне, чел/м2
-                                    final double dZone = dPeopleZone / sZone;
-                                    switch (zoneType) {
-                                    case ZoneExt.FLOOR:
-                                        vZone = vElem(dZone);
-                                        break;
-                                    case ZoneExt.STAIRS:
-                                        final double hElem = _zone.getMinZ();
-                                        final double hElem0 = safetyZone
-                                                .getMinZ(iip);
-                                        final double dh = hElem - hElem0; // Разница
-                                                                          // высот
-                                                                          // зон
-                                        if (Math.abs(dh) >= dxyz) {
-                                            // Определяем направление движения
-                                            // по лестнице
-                                            int direction = (hElem > hElem0)
-                                                    ? Direction.DOWN
-                                                    : Direction.UP;
-                                            _zone.setDirection(direction);
-                                            vZone = vElemZ(direction, dZone);
-                                        } else vZone = vElem(dZone);
-                                        break;
-                                    default:
-                                        log.info("Неопределенный тип зоны");
-                                        break;
-                                    }
-
-                                    double vTransition = vElem(lTransition,
-                                            dZone);
-                                    final double v = Math.min(vZone,
-                                            vTransition); // Скорость на выходе
-                                                          // из зоны (помещения)
-                                    final double d1 = lTransition * v * tay
-                                            / sZone;
-
-                                    double d2 = (d1 >= 1) ? 1 : d1;
-
-                                    final double dPeopl = d2 * dPeopleZone; // Изменение
-                                                                            // численности
-                                                                            // людей
-                                                                            // в
-                                                                            // помещении,
-                                                                            // откуда
-                                                                            // высасываются
-                                                                            // люди
-                                    final double delta = dPeopleZone - dPeopl; // dPeopRoom
-                                                                               // -
-                                                                               // кол.
-                                                                               // людей
-                                                                               // в
-                                                                               // ячейке,
-                                                                               // откуда
-                                                                               // засасываем
-
-                                    double ddPeople = (delta > 0) ? dPeopl
-                                            : dPeopleZone; // ddPeople - кол.
-                                                           // людей, которые
-                                                           // могут быть
-                                                           // высосаны
-
-                                    final double dmaxElem0 = D_MAX; // максимально-допустимая
-                                                                    // плотность
-                                                                    // в зоне,
-                                    // куда засасываются люди
-                                    // if(dmaxElem0 < 0)
-                                    // Evacuation.out_results.println(" Mistake
-                                    // Traffic - 308 dmaxElem0= " + dmaxElem0);
-
-                                    final double maxPeople = dmaxElem0
-                                            * zone0.getArea(); // max nubber
-                                                               // people in room
-                                                               // elem0 (куда
-                                                               // засасываем)
-                                    final double numP = maxPeople
-                                         // Вместимость элемента elem0 на данный момент времени
-                                            - zone0.getNumOfPeople(); 
-                                    final double changePeople = (numP > ddPeople)
-                                            ? ddPeople : numP;
-                                 // Увеличение людей в безопасной зоне
-                                    zone0.addPeople(changePeople);
-                                    _zone.removePeople(changePeople); // Уменьшение
-                                                                      // людей в
-                                                                      // элементе
-                                                                      // здания
-                                    // Увеличение людей через дверь ii
-                                    _transition.addPassingPeople(changePeople);
-                                    _transition.nTayIncrease(); // Признак
-                                                                // обработки
-                                                                // двери
-                                    _transition.setNumberExit(ii);
-
-                                    final int indp = _transition.getNTay();
-                                    _zone.setNTay(indp); // Признак обработки
-                                                         // элементa здания
-                                    _zone.setNumberExit(ii); // Помещение
-                                                             // освобождается
-                                                             // через выход ii
-
+           final double maxPeople = D_MAX*receivingArea.getArea(); 
+           final double numP = maxPeople-receivingArea.getNumOfPeople(); 
+           final double changePeople = (numP > ddPeople)? ddPeople : numP;
+           receivingArea.addPeople(changePeople);// Увелич. людей в принимающей 
+           radiatingArea.removePeople(changePeople);// Уменьшение людей 
+           exit.addPassingPeople(changePeople);  // Увел. людей через дверь
+           exit.nTayIncrease();                  // Признак  обработки двери
+           exit.setNumberExit(ii);
+           final int indp = exit.getNTay();
+           radiatingArea.setNTay(indp);     // Признак обраб. элементa здания
+           radiatingArea.setNumberExit(ii); // Помещ. освобож. через выход ii
                                     // Потенциал времени в первом помещении
-                                    final double timeout = (v > 0)
-                                            ? zone0.getTimeToReachExit()
-                                                    + Math.sqrt(sZone) / v
-                                            : zone0.getTimeToReachExit();
-                                    _zone.setTimeToReachExit(timeout);
+           final double timeout = (v > 0)? receivingArea.getTimeToReachExit()
+              + Math.sqrt(sZone) / v: receivingArea.getTimeToReachExit();
+              radiatingArea.setTimeToReachExit(timeout);
 
-                                    zoneOut.get(ii).add(_zone);
-                                    finish_out[ii]++;
-                                } // ==4
-                            } // Обработка списка порталов
-                        } // ==3
-
-                        if (finish_out[ii] > k_out[ii]) {
-                            k_out[ii]++;
-                            constDirec = true;
-                        } else {
-                            outstep[ii] = false;
-                            constDirec = false;
-                        }
-                    } // outstep[ii] == true ==2
-
-                    if (constDirec == true) { // 5/06/2015
-                        final int iikd = iiTurn + 1;
-                        if (iikd >= NUM_OF_EXITS) constDirec = false;
-                        else {
-                            if (zoneOut.get(ii).get(k_out[ii])
-                                    .getTimeToReachExit() > dZone0[iikd]) {
-                                constDirec = false;
-                            } else {
-                                constDirec = true;
-                            }
-                        }
-                    }
-                } while (constDirec); // 02 - finis
-            } // Обработка очереди ii
+           zoneOut.get(ii).add(radiatingArea);
+           finish_out[ii]++;
+          } // ==41
+         } //  == 5 Обработка списка порталов
+        } // ==3
+         if (finish_out[ii] > k_out[ii]) {
+            k_out[ii]++;  evacOutLimit = true;
+            } else {
+                outstep[ii] = false;  evacOutLimit = false;  }
+      } // outstep[ii] == true ==2
+      if (evacOutLimit == true) { // 5/06/2015
+         final int iikd = iiTurn + 1;
+         if (iikd >= NUM_OF_EXITS) evacOutLimit = false;
+           else { 
+              if (zoneOut.get(ii).get(k_out[ii]).getTimeToReachExit() > dZone0[iikd]) {
+                  evacOutLimit = false; } else {evacOutLimit = true;}
+                }
+        }
+   } while (evacOutLimit); // 02 - finis
+            } // Обработка очереди ii           // == 001 
             xyz = false;
-
             for (int ii1 = 0; ii1 < NUM_OF_EXITS; ii1++)
                 if (outstep[ii1] == true) xyz = true;
         } while (xyz); // do 1
@@ -458,7 +369,11 @@ public class Traffic {
             zones.get(0).setNumberOutput(-kkktay);
             // ????? return zones;
         } // Выход из цикла моделирования (В здании нет людей).
-    } // Цикл по времени процесса
+    } 
+
+
+
+    // Цикл по времени процесса
 
     // ???? return zonesList;
 
@@ -593,4 +508,104 @@ public class Traffic {
         return dElem > d0 ? v0 * (1.0 - a * Math.log(dElem / d0)) : v0;
     }
 
+    /**   30.12.2016 - Колодкин
+     * @param radiatingArea   - зона отдающая 
+     * @param receivingArea   - зона принимающая  
+     * @param exit            - переход между отдающей и принимающей зонами
+     * @param dxyz            - точность представления координат
+     * @param tay             - временной шаг, мин
+     * @return 
+     */
+    private  double procZones(ZoneExt radiatingArea,/* String idRadiatingArea,*/ ZoneExt receivingArea, 
+                    TransitionExt exit, double dxyz, double tay) {
+                                    // Отдающая зона
+//        final ZoneExt radiatingArea = zones.get(idRadiatingArea);           
+        final int zoneType = radiatingArea.getType();              // тип
+        final double dPeopleZone = radiatingArea.getNumOfPeople(); // кол.людей
+        final double sZone = radiatingArea.getArea();              // Площадь
+        double vZone = Double.NaN;
+        final double dZone = dPeopleZone/sZone;        // плотность, чел/м2  
+        switch (zoneType) {
+          case ZoneExt.FLOOR: vZone = vElem(dZone);  break;
+          case ZoneExt.STAIRS:
+              final double hElem  = radiatingArea.getMinZ();    // отдающая
+              final double hElem0 = receivingArea.getMinZ();    // принимающая
+              final double dh = hElem - hElem0;    // Разница высот зон
+              if (Math.abs(dh) >= dxyz) {
+              int direction = (hElem > hElem0)? Direction.DOWN
+                                              : Direction.UP;
+              receivingArea.setDirection(direction);
+              vZone = vElemZ(direction, dZone); }
+                    else vZone = vElem(dZone);
+               break;
+          default: log.info("Неопределенный (procZones) тип зоны");  break;
+        }
+        final double lTransition = exit.getWidth();     // Ширина проема
+        double vTransition = vElem(lTransition, dZone);
+        final double v = receivingArea.getPermeabilityle()
+                * Math.min(vZone, vTransition); // Скорость на выходе
+        final double d1 = lTransition * v * tay / sZone;
+        double d2 = (d1 >= 1) ? 1 : d1;
+        final double dPeopl = d2 * dPeopleZone; // Изменение кол.людей
+        final double delta = dPeopleZone - dPeopl; // Отдающая
+        double ddPeople = (delta > 0) ? dPeopl: dPeopleZone; // изменение
+        return ddPeople;
+    }
+        
+    
+    /*      final double dmaxElem0 = D_MAX; // максимально-допустимая
+    // плотность
+    // в зоне,
+// куда засасываются люди
+// if(dmaxElem0 < 0)
+// Evacuation.out_results.println(" Mistake
+// Traffic - 308 dmaxElem0= " + dmaxElem0);   */
+
+// max nubber people in area (куда  засасываем)
+    
+    
+    
+  /*      
+        final double dmaxElem0 = D_MAX; // максимальная плот. в зоне 
+
+
+                                 final double maxPeople = dmaxElem0
+                                         * zone0.getArea(); // max nubber
+                                                            // people in room
+                                                            // elem0 (куда
+                                                            // засасываем)
+                                 final double numP = maxPeople
+                                      // Вместимость элемента elem0 на данный момент времени
+                                         - zone0.getNumOfPeople(); 
+                                 final double changePeople = (numP > ddPeople)
+                                         ? ddPeople : numP;
+                              // Увеличение людей в безопасной зоне
+                                 zone0.addPeople(changePeople);
+                                 _zone.removePeople(changePeople); // Уменьшение
+                                                                   // людей в
+                                                                   // элементе
+                                                                   // здания
+                                 // Увеличение людей через дверь ii
+                                 _transition.addPassingPeople(changePeople);
+                                 _transition.nTayIncrease(); // Признак
+                                                             // обработки
+                                                             // двери
+                                 _transition.setNumberExit(ii);
+
+                                 final int indp = _transition.getNTay();
+                                 _zone.setNTay(indp); // Признак обработки
+                                                      // элементa здания
+                                 _zone.setNumberExit(ii); // Помещение
+                                                          // освобождается
+                                                          // через выход ii
+
+                                 // Потенциал времени в первом помещении
+                                 final double timeout = (v > 0)
+                                         ? zone0.getTimeToReachExit()
+                                                 + Math.sqrt(sZone) / v
+                                         : zone0.getTimeToReachExit();
+                                 _zone.setTimeToReachExit(timeout);
+
+     */   
+       
 }
