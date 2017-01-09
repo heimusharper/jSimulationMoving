@@ -141,8 +141,6 @@ public class Traffic {
    
               // Идентификатор портала на улицу
               TransitionExt exit = exits.get(ii);
-              // Ширина проема на улицу
-              double widthTransition = exit.getWidth();
 
               // Определяем зону, которая находится в здании и зону, которая
               // граничит с эвакуационным выходом
@@ -152,43 +150,7 @@ public class Traffic {
 
               // ---- Входим в здание ---
               // Обработка первой (проходимой) зоны (рядом с улицей)
-              ZoneExt _zone = zones.get(uuidZone);
-              double dPeopleZone = _zone.getNumOfPeople();
-              double sZone = _zone.getArea();
-              double vZone = vElem(_zone, safetyZone, ii); // Скорость движения в зоне
-              // Определяем плотность людей в зоне, рядом с выходом чел/м2
-              double dZone = _zone.getDensityOfPeople();
-              // Скорость движения в дверях на выходе из здания
-              double vTransition = vElem(widthTransition, dZone);
-              // Скорость на выходе из здания
-              double vAtExit = Math.min(vZone, vTransition);
-              // Доля вышедших  людей
-              double d1 = widthTransition * vAtExit * getTay() / sZone; 
-              double d2 = (d1 > 1) ? 1 : d1;
-              // Изменение численности людей в помещении рядом с выходом
-              double dPeople = d2 * dPeopleZone;
-              double delta = dPeopleZone - dPeople;
-              double ddPeople = (delta > 0) ? dPeople : dPeopleZone;
-             
-              safetyZone.addPeople(ddPeople);// Увел. людей в безоп. зоне
-              _zone.removePeople(ddPeople);  
-              // Увеличение счетчика людей, прошедших через дверь ii
-              exit.addPassingPeople(ddPeople);
-              // Признак обработки двери. Увеличение TransitionExt#nTay на
-              // единицу
-              exit.nTayIncrease();
-              // Выход через дверь ii на улицу. Присвоили выходу номер
-              exit.setNumberExit(ii);
-              // Признак обработки элемента здания
-              // Метка, которая говорит, что это помещение уже обработано
-              // ii-той дверью
-              _zone.setNTay(exit.getNTay());
-              // Помещение освобождается через выход ii
-              _zone.setNumberExit(ii);
-              // Потенциал времени в первом помещении. Время достижения
-              // эвакуационного выхода из зоны
-              _zone.setTimeToReachExit(
-                        (vAtExit > 0) ? Math.sqrt(sZone) / vAtExit : 0.0);
+              ZoneExt _zone = processingFirstZone(safetyZone, uuidZone, exit, ii);
 
               // Добавляем ближайшую к выходу зону в соответствующий список
               // "на выход"
@@ -323,6 +285,50 @@ public class Traffic {
             // ????? return zones;
         } // Выход из цикла моделирования (В здании нет людей).
     }     // kkktay=1
+    }
+
+    private ZoneExt processingFirstZone(SafetyZone safetyZone, String uuidZone,
+            TransitionExt exit,  int ii) {
+        // Ширина проема на улицу
+        double widthTransition = exit.getWidth();
+        ZoneExt _zone = zones.get(uuidZone);
+        double dPeopleZone = _zone.getNumOfPeople();
+          double sZone = _zone.getArea();
+          double vZone = vElem(_zone, safetyZone, ii); // Скорость движения в зоне
+          // Определяем плотность людей в зоне, рядом с выходом чел/м2
+          double dZone = _zone.getDensityOfPeople();
+          // Скорость движения в дверях на выходе из здания
+          double vTransition = vElem(widthTransition, dZone);
+          // Скорость на выходе из здания
+          double vAtExit = Math.min(vZone, vTransition);
+          // Доля вышедших  людей
+          double d1 = widthTransition * vAtExit * getTay() / sZone; 
+          double d2 = (d1 > 1) ? 1 : d1;
+          // Изменение численности людей в помещении рядом с выходом
+          double dPeople = d2 * dPeopleZone;
+          double delta = dPeopleZone - dPeople;
+          double ddPeople = (delta > 0) ? dPeople : dPeopleZone;
+         
+          safetyZone.addPeople(ddPeople);// Увел. людей в безоп. зоне
+          _zone.removePeople(ddPeople);  
+          // Увеличение счетчика людей, прошедших через дверь ii
+          exit.addPassingPeople(ddPeople);
+          // Признак обработки двери. Увеличение TransitionExt#nTay на
+          // единицу
+          exit.nTayIncrease();
+          // Выход через дверь ii на улицу. Присвоили выходу номер
+          exit.setNumberExit(ii);
+          // Признак обработки элемента здания
+          // Метка, которая говорит, что это помещение уже обработано
+          // ii-той дверью
+          _zone.setNTay(exit.getNTay());
+          // Помещение освобождается через выход ii
+          _zone.setNumberExit(ii);
+          // Потенциал времени в первом помещении. Время достижения
+          // эвакуационного выхода из зоны
+          _zone.setTimeToReachExit(
+                    (vAtExit > 0) ? Math.sqrt(sZone) / vAtExit : 0.0);
+        return _zone;
     }
 
 
