@@ -43,12 +43,7 @@ import java.util.ArrayList;
  * Created by boris on 17.12.16.     Modification of 27.12.2016
  */
 public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
-    
-    {
-      setPermeabilityle(1);
-      setNTay(0);
-    }
-    
+
     /**
      * Минимальное и максимальное значение по оси Z
      */
@@ -57,11 +52,11 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
     /**
      * Проницаемость зоны. (0 - зона не проницаема для людей, 1- полностью проницаема)
      */
-    private double  permeability;
+    private double permeability;
     /**
      * Направление движения по лестнице. (+3 - вверх, -3 - вниз)
      */
-    private int    direction; 
+    private int    direction;
     /**
      * Номер эвакуационного выхода, в который идет движение из текущего
      * помещения
@@ -76,11 +71,15 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      * Время движения до эвакуационного выхода
      */
     private double timeToReachExit;
-
     /**
      * Списко дверей, которые соединяются с зоной
      */
     private ArrayList<TransitionExt> transitionList = new ArrayList<>();
+
+    {
+        setPermeability(1);
+        setNTay(0);
+    }
 
     /**
      * @return Минимальное значение по оси Z в пределах зоны
@@ -180,19 +179,30 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
     public void setDirection(int direction) {
         this.direction = direction;
     }
+
     /**
-     * Позволяет изменить проницаемость зоны 
-     *
-     * @param permeab - проницаемость зоны ( от 0 до 1)
+     * @return Значение проницаемости зоны
      */
-    public void setPermeabilityle(double permeab) {
-        this.permeability = permeab;
-    }
-    
-    public double getPermeabilityle() {
+    public double getPermeability() {
         return this.permeability;
     }
-    
+
+    /**
+     * @return true, если зона проницаема
+     */
+    public boolean isPermeability() {
+        return this.permeability == 1;
+    }
+
+    /**
+     * Позволяет изменить проницаемость зоны
+     *
+     * @param permeabilityValue - проницаемость зоны ( от 0 до 1)
+     */
+    public void setPermeability(double permeabilityValue) {
+        this.permeability = permeabilityValue;
+    }
+
     /**
      * Позволяет увеличить количество людей в зоне на заданное число
      *
@@ -215,10 +225,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
         this.numberExit = numberExit;
     }
 
-    public void setNTay(int nTay) {
-        this.nTay = nTay;
-    }
-
     public void nTayIncrease() {
         setNTay(getNTay() + 1);
     }
@@ -227,8 +233,17 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
         return nTay;
     }
 
-    
-    
+    public void setNTay(int nTay) {
+        this.nTay = nTay;
+    }
+
+    /**
+     * @return Время достижения эвакуационного выхода из текущей зоны
+     */
+    public double getTimeToReachExit() {
+        return this.timeToReachExit;
+    }
+
     /**
      * Позволяет установить время достижения эвакуационного выхода из
      * текущего помещения
@@ -237,10 +252,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     public void setTimeToReachExit(double timeToReachExit) {
         this.timeToReachExit = timeToReachExit;
-    }
-    
-    public double getTimeToReachExit() {
-        return this.timeToReachExit;
     }
 
     /**
@@ -252,7 +263,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
 
     /**
      * @param i номер двери (индекс списка)
-     *
      * @return Дверь по индексу ({@link TransitionExt}
      */
     public TransitionExt getTransition(int i) {
@@ -261,7 +271,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
 
     /**
      * @param tUuid строковый идентификатор двери
-     *
      * @return Дверь по uuid ({@link TransitionExt}
      */
     public TransitionExt getTransition(String tUuid) {
@@ -280,5 +289,12 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     void addTransition(TransitionExt t) {
         getTransitionList().add(t);
+    }
+
+    /**
+     * @return Текущую плотность в зоне
+     */
+    public double getDensityOfPeople() {
+        return getNumOfPeople() / getArea();
     }
 }
