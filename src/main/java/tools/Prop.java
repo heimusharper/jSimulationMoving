@@ -46,7 +46,11 @@ public class Prop {
     // Название файла с настройками
     private static final String FILE_NAME = "config.properties";
     // Порт, на котором работает сервер
-    private static int serverPort;
+    private static int    serverPort;
+    // Порт, на котором работает сервер
+    private static int    clientPort;
+    // Порт, на котором работает сервер
+    private static String clientHost;
 
     /*
      * Чтение файла с настройками происходит один раз при первом вызове
@@ -61,6 +65,9 @@ public class Prop {
 
             serverPort = Integer.parseInt(
                     property.getProperty(Fields.RINTD_TCP_SERVER_PORT));
+            clientPort = Integer.parseInt(
+                    property.getProperty(Fields.RINTD_TCP_CLIENT_PORT));
+            clientHost = property.getProperty(Fields.RINTD_TCP_CLIENT_HOST);
             log.info("Successful read properties from {}", FILE_NAME);
         } catch (IOException e) {
             log.error("Fail! File not found {}", FILE_NAME, e);
@@ -74,10 +81,22 @@ public class Prop {
         return serverPort;
     }
 
+    public static String getClientHost() {
+        return clientHost;
+    }
+
+    public static int getClientPort() {
+        return clientPort;
+    }
+
     /**
      * Класс, в котором описаны поля файла с настройками
      */
     private class Fields {
         private static final String RINTD_TCP_SERVER_PORT = "rintd.tcp.server.port";
+        private static final String RINTD_TCP_CLIENT_PORT =
+                "rintd.tcp.client" + ".port";
+        private static final String RINTD_TCP_CLIENT_HOST =
+                "rintd.tcp.client" + ".host";
     }
 }
