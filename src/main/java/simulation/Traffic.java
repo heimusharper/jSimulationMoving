@@ -131,7 +131,7 @@ public class Traffic {
 
         // Формирование и обработка (одновременная) списков к каждому выходу
         // Цикл по времени процесса
-        for (int kkktay = 1; kkktay <= numberEvacCycle; kkktay++) {
+        for (int kkktay = 1; kkktay <= numberEvacCycle; kkktay++) { // kkktay=1
           boolean xyz = false;
           for (int ii = 0; ii < NUM_OF_EXITS; ii++)
               outstep[ii] = true;
@@ -364,20 +364,15 @@ public class Traffic {
             for (int ii1 = 0; ii1 < NUM_OF_EXITS; ii1++)
                 if (outstep[ii1] == true) xyz = true;
         } while (xyz); // do 1
-
-        if (Math.abs(zones.get(0).getNumOfPeople() - numOfPeople) < 0.5) {
-            zones.get(0).setNumberOutput(-kkktay);
-            // ????? return zones;
-        } // Выход из цикла моделирования (В здании нет людей).
-    } 
-
+                 // Выход из цикла моделирования (В здании нет людей).
+        if (Math.abs(safetyZone.getNumOfPeople() - numOfPeople) < 0.5) {
+            safetyZone.setNumberExit(-kkktay); } 
+    }     // kkktay=1
+    }
 
 
     // Цикл по времени процесса
-
-    // ???? return zonesList;
-
-    // }
+ 
 
     /**
      * Метод сортировки плотностей перед выходами
