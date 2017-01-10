@@ -297,4 +297,11 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
     public double getDensityOfPeople() {
         return getNumOfPeople() / getArea();
     }
+
+    /**
+     * @return true если в зоне нет людей
+     */
+    public boolean isEmpty() {
+        return getNumOfPeople() == 0;
+    }
 }

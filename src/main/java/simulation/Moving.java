@@ -54,6 +54,7 @@ public class Moving implements Runnable {
             traffic.footTraffic(time);
             timeModel += time;
         }
+        log.debug("getSafetyZone: {}", bim.getSafetyZone().getNumOfPeople());
 
         log.info("Finish simulation moving");
     }
