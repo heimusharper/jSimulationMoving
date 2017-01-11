@@ -40,14 +40,19 @@ import java.util.ArrayList;
  * Класс, расширяющий базовый {@link Zone}.
  * Предназначен для полей, которые не входят в *.json файл с геометрией
  * <p>
- * Created by boris on 17.12.16.
+ * Created by boris on 17.12.16.     Modification of 27.12.2016
  */
 public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
+
     /**
      * Минимальное и максимальное значение по оси Z
      */
     private double zMin = Double.MAX_VALUE;
     private double zMax = -Double.MIN_VALUE;
+    /**
+     * Проницаемость зоны. (0 - зона не проницаема для людей, 1- полностью проницаема)
+     */
+    private double permeability;
     /**
      * Направление движения по лестнице. (+3 - вверх, -3 - вниз)
      */
@@ -58,7 +63,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     private int    numberExit;
     /**
-     * Индекс, которые равен такому же индексу эвакуационного выхода. Признак
+     * Количество проходов по циклу с временным шагом tay. Признак
      * того, что помещение уже обрботано
      */
     private int    nTay;
@@ -66,11 +71,15 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      * Время движения до эвакуационного выхода
      */
     private double timeToReachExit;
-
     /**
      * Списко дверей, которые соединяются с зоной
      */
     private ArrayList<TransitionExt> transitionList = new ArrayList<>();
+
+    {
+        setPermeability(1);
+        setNTay(0);
+    }
 
     /**
      * @return Минимальное значение по оси Z в пределах зоны
@@ -172,6 +181,29 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
     }
 
     /**
+     * @return Значение проницаемости зоны
+     */
+    public double getPermeability() {
+        return this.permeability;
+    }
+
+    /**
+     * @return true, если зона проницаема
+     */
+    public boolean isPermeability() {
+        return this.permeability == 1;
+    }
+
+    /**
+     * Позволяет изменить проницаемость зоны
+     *
+     * @param permeabilityValue - проницаемость зоны ( от 0 до 1)
+     */
+    public void setPermeability(double permeabilityValue) {
+        this.permeability = permeabilityValue;
+    }
+
+    /**
      * Позволяет увеличить количество людей в зоне на заданное число
      *
      * @param people - количество людей
@@ -193,8 +225,23 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
         this.numberExit = numberExit;
     }
 
+    public void nTayIncrease() {
+        setNTay(getNTay() + 1);
+    }
+
+    public int getNTay() {
+        return nTay;
+    }
+
     public void setNTay(int nTay) {
         this.nTay = nTay;
+    }
+
+    /**
+     * @return Время достижения эвакуационного выхода из текущей зоны
+     */
+    public double getTimeToReachExit() {
+        return this.timeToReachExit;
     }
 
     /**
@@ -216,7 +263,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
 
     /**
      * @param i номер двери (индекс списка)
-     *
      * @return Дверь по индексу ({@link TransitionExt}
      */
     public TransitionExt getTransition(int i) {
@@ -225,7 +271,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
 
     /**
      * @param tUuid строковый идентификатор двери
-     *
      * @return Дверь по uuid ({@link TransitionExt}
      */
     public TransitionExt getTransition(String tUuid) {
@@ -244,5 +289,19 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     void addTransition(TransitionExt t) {
         getTransitionList().add(t);
+    }
+
+    /**
+     * @return Текущую плотность в зоне
+     */
+    public double getDensityOfPeople() {
+        return getNumOfPeople() / getArea();
+    }
+
+    /**
+     * @return true если в зоне нет людей
+     */
+    public boolean isEmpty() {
+        return getNumOfPeople() == 0;
     }
 }
