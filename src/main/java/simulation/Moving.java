@@ -23,61 +23,37 @@
 
 package simulation;
 
+import bus.DBus;
 import json.extendetGeometry.BIMExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * Класс моделирования
  */
 public class Moving implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
-    private BIMExt bim;
-
-    public Moving(BIMExt bim) {
-        this.bim = bim;
-    }
 
     @Override
     public void run() {
         log.info("Running thread with simulation moving");
+
+        BIMExt bim = DBus.getBim();
+        Traffic traffic = new Traffic(bim);
         // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         int acceptRepeat = 500;
-        // Интервал моделирования, миллисек (minimum 150ms)
-        // TODO Требует корректировки
-        long timeInterval = 10000;
-        float tay = getTay(); // Шаг моделирования
-        // Высчитываем интервал моделирования в зависимости от timeInterval
-        int time = new BigDecimal(((timeInterval / 1000f) / 60f) / tay)
-                .setScale(0, RoundingMode.UP).intValue();
 
-        double timeModel = 0.0; // Время эвакуации, мин
+        double timeModel = 0.0; // Текущее время моделирования эвакуации, c
+        double time = 10; // Интервал моделирования эвакуации, c
 
-        Traffic traffic = new Traffic(bim, tay, time);
-
-        // Главный цикл моделирования
         for (int i = 0; i < acceptRepeat; i++) {
-            traffic.footTraffic();
-
-            timeModel += tay * time * 60;
+            traffic.footTraffic(time);
+            timeModel += time;
+            try { Thread.sleep(1L); } catch (InterruptedException e) {e.printStackTrace();}
         }
+        log.debug("getSafetyZone: {}", bim.getSafetyZone().getNumOfPeople());
 
         log.info("Finish simulation moving");
     }
 
-    /**
-     * @return tay - шаг моделирования
-     */
-    private float getTay() {
-        float hxy = 0.5f; // характерный размер области, м
-        float ktay = 0.5f; // коэффициент (< 1) уменьшения шага по времени
-        // для устойчивости расчетов
-        float vmax = 100f; // максимальная скорость эвакуации, м/мин
-
-        // Шаг моделирования, мин
-        return (hxy / vmax) * ktay;
-    }
 }

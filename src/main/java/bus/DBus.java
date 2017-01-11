@@ -27,6 +27,8 @@
 
 package bus;
 
+import json.extendetGeometry.BIMExt;
+
 /**
  * Общая шина данных. <br>
  * Created by boris on 20.12.16.
@@ -34,13 +36,21 @@ package bus;
 public class DBus {
 
     private static String rawJson;
-
-    public static void setRawJson(final String rawJson) {
-        DBus.rawJson = rawJson;
-    }
+    private static BIMExt bim;
 
     public static String getRawJson() {
         return DBus.rawJson;
     }
 
+    public static void setRawJson(final String rawJson) {
+        DBus.rawJson = rawJson;
+    }
+
+    public static BIMExt getBim() {
+        return bim;
+    }
+
+    public static void setBim(BIMExt bim) {
+        DBus.bim = bim;
+    }
 }
