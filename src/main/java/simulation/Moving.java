@@ -23,24 +23,20 @@
 
 package simulation;
 
+import bus.DBus;
+import json.extendetGeometry.BIMExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import json.extendetGeometry.BIMExt;
 
 /**
  * Класс моделирования
  */
 public class Moving implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
-    private BIMExt              bim;
-
-    public Moving(BIMExt bim) {
-        this.bim = bim;
-    }
 
     @Override
     public void run() {
+        BIMExt bim = DBus.getBim();
         Traffic traffic = new Traffic(bim);
         // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         log.info("Running thread for simulation moving");
@@ -53,6 +49,7 @@ public class Moving implements Runnable {
         for (int i = 0; i < acceptRepeat; i++) {
             traffic.footTraffic(time);
             timeModel += time;
+            try { Thread.sleep(1000L); } catch (InterruptedException e) {e.printStackTrace();}
         }
         log.debug("getSafetyZone: {}", bim.getSafetyZone().getNumOfPeople());
 
