@@ -49,8 +49,7 @@ public class EBus {
      * @param object объект (класса)
      */
     public static void register(Object object) {
-        log.debug("Register {} on the EVENT BUS",
-                object.getClass().getSimpleName());
+        log.debug("Register {} on the EVENT BUS", object.getClass().getSimpleName());
         EBus.getInstance().register(object);
     }
 
@@ -60,8 +59,7 @@ public class EBus {
      * @param object объект (класса)
      */
     public static void unregister(Object object) {
-        log.debug("Unregistered {} on the EVENT BUS",
-                object.getClass().getSimpleName());
+        log.debug("Unregistered {} on the EVENT BUS", object.getClass().getSimpleName());
         EBus.getInstance().unregister(object);
     }
 
@@ -71,8 +69,7 @@ public class EBus {
      * @param event сообщение
      */
     public static void post(Object event) {
-        log.debug("Post event type of {} class",
-                event.getClass().getSimpleName());
+        log.debug("Post event type of {} class", event.getClass().getSimpleName());
         EBus.getInstance().post(event);
     }
 
@@ -88,8 +85,7 @@ public class EBus {
 
         static {
             BUS_INSTANCE = new EventBus(EBusHelper.class.getName());
-            LoggerFactory.getLogger(EBusHelper.class)
-                    .info("Create instance bus events");
+            LoggerFactory.getLogger(EBusHelper.class).info("Create instance bus events");
         }
     }
 
