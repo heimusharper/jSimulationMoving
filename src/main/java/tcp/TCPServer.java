@@ -27,14 +27,20 @@
 
 package tcp;
 
+import bus.EBus;
+import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import bus.DBus;
-import tools.Prop;
+import simulation.Moving;
+import tools.CounterPeopleHandler;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import static tools.Prop.getServerPort;
 
 /**
  * TCP сервер для организации независимого GUI <br>
@@ -44,8 +50,6 @@ public class TCPServer extends Thread {
 
     private static final Logger log = LoggerFactory.getLogger(TCPServer.class);
 
-    private final int SERVER_PORT; // Порт, на котором висит сервер
-
     /**
      * Allocates a new {@code Thread} object. This constructor has the same
      * effect as {@linkplain #Thread(ThreadGroup, Runnable, String) Thread}
@@ -54,7 +58,6 @@ public class TCPServer extends Thread {
      * {@code "Thread-"+}<i>n</i>, where <i>n</i> is an integer.
      */
     public TCPServer() {
-        SERVER_PORT = Prop.getServerPort();
     }
 
     /**
@@ -69,69 +72,139 @@ public class TCPServer extends Thread {
      * @see Thread#run()
      */
     @Override public void run() {
-        // Открываем сокет
-        ServerSocket serverSocket = null;
+        log.info("Server is started");
+        ServerSocket serverSocket = null; // Открываем сокет
         try {
-            serverSocket = new ServerSocket(SERVER_PORT);
+            serverSocket = new ServerSocket(getServerPort());
         } catch (IOException e) {
             log.error("Fail!", e);
         }
         log.info("Server started at {}", serverSocket);
 
         // Ждем подключение
+        log.info("Waiting for a connection...");
         //noinspection InfiniteLoopStatement
         while (true) {
             log.info("Waiting for a connection...");
 
             Socket activeSocket = null;
             try {
-                activeSocket =
-                        serverSocket != null ? serverSocket.accept() : null;
+                activeSocket = serverSocket.accept();
                 log.info("Received a connection from {}", activeSocket);
             } catch (IOException e) {
                 log.error("Fail!", e);
             }
 
-            final Socket finalActiveSocket = activeSocket;
-            Runnable runnable = () -> handleClientRequest(finalActiveSocket);
-
             // Стартуем новыйе поток для клиента
-            new Thread(runnable).start();
-            log.info("Start a new thread for client {}",
-                    finalActiveSocket != null ?
-                            finalActiveSocket.getInetAddress() :
-                            null);
+            try {
+                ClientHandler clientHandler = new ClientHandler(activeSocket);
+                new Thread(clientHandler).start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            log.info("Start a new thread for client {}", activeSocket != null ? activeSocket.getInetAddress() : null);
         }
     }
 
     /**
-     * Обработчик запросов клиента
-     *
-     * @param socket - активный сокет, октрытый для клиента
+     * Обработчик подключенного клиента.
+     * Имеет в своем составе два метода: чтение из потока и запись данных в поток
      */
-    private static void handleClientRequest(final Socket socket) {
-        try (final BufferedReader socketReader = new BufferedReader(
-                new InputStreamReader(socket.getInputStream()));
-                final BufferedWriter socketWriter = new BufferedWriter(
-                        new OutputStreamWriter(socket.getOutputStream()))) {
+    private class ClientHandler implements Runnable {
+        private BufferedOutputStream bos;
+        private BufferedInputStream  bis;
+        /**
+         * Буфер байт, которые говорят о количестве байт, которые следует читать
+         */
+        private byte headerData[] = new byte[2];
+        private Socket clientSocket;
 
-            String inMsg;
-            while ((inMsg = socketReader.readLine()) != null) {
-                log.info("Received from client: {}", inMsg);
+        private ClientHandler(Socket clientSocket) throws IOException {
+            setClientSocket(clientSocket);
+            bos = new BufferedOutputStream(getClientSocket().getOutputStream());
+            bis = new BufferedInputStream(getClientSocket().getInputStream());
+            registeredOnBus();
+        }
 
-                if (inMsg.equals("geom")) {
-                    socketWriter.write(DBus.getRawJson());
-                    log.info("Send to client json");
-                } else {
-                    socketWriter.write(inMsg);
-                }
-                socketWriter.write("\n");
-                socketWriter.flush();
+        private Socket getClientSocket() {
+            return clientSocket;
+        }
+
+        private void setClientSocket(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+        }
+
+        /**
+         * Регистрация класса на шине событий
+         */
+        private void registeredOnBus() throws IOException {
+            EBus.register(this);
+        }
+
+        /**
+         * Отправка данных клиенту (Запись данных в поток)
+         *
+         * @throws IOException смотри описание {@link IOException}
+         */
+        @Subscribe private void sendData(CounterPeopleHandler handler) throws IOException {
+            double numOfPeople = handler.getNumOfPeople();
+            String zid = handler.getZid();
+            //            zid.substring(zid.length() - 5, zid.length()).getBytes()
+
+            byte[] uuid = zid.substring(zid.length() - 17, zid.length()).getBytes();
+            byte[] data = new byte[uuid.length + 2];
+            System.arraycopy(uuid, 0, data, 0, uuid.length);
+            data[uuid.length+1] = '\n';
+
+            bos.write(data);
+            bos.flush();
+        }
+
+        /**
+         * Чтение данных из потока
+         *
+         * @throws IOException смотри описание {@link IOException}
+         */
+        private void readData() throws IOException {
+            // Проверяем наличие байт на чтение
+            if (bis.available() == 0) return;
+            // Проверяем наличие байт на чтение
+            if (bis.read(headerData) != headerData.length) return;
+            // Получаем размер пакета
+            final int sizeBuffer = (headerData[0] << 8) + headerData[1];
+            // Буфер данных
+            final byte resultsBuffer[] = new byte[sizeBuffer];
+
+            boolean isLoop = true;
+            while (isLoop) {
+                final int r = bis.read(resultsBuffer); // количество прочитанных байт
+                // Если количество прочитанных байт меньше, чем размер пакета, то продолжаем считывание
+                //            if (r < sizeBuffer) continue;
+
+                final String data0 = new String(resultsBuffer, 0, r);
+                System.out.println(data0);
+
+                isLoop = false;
             }
-            socket.close();
-            log.info("Close connection with {}", socket.getInetAddress());
-        } catch (Exception e) {
-            log.error("Fail!", e);
+        }
+
+        @Override public void run() {
+            Moving moving = new Moving();
+            moving.start();
+            /*while (!clientSocket.isClosed() && clientSocket.isConnected()) {
+                try {
+                    sleep(300L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    readData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }*/
         }
     }
 }
