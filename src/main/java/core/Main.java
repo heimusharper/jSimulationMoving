@@ -24,16 +24,16 @@
  * This code is in BETA; some features are incomplete and the code
  * could be written better.
  ******************************************************************************/
-package core;
 
+package core;
 
 import bus.DBus;
 import json.extendetGeometry.BIMExt;
 import json.extendetGeometry.BIMLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import simulation.Moving;
 import tcp.TCPClient;
+import tcp.TCPServer;
 
 /**
  * Точка входа
@@ -54,15 +54,13 @@ public class Main {
         DBus.setRawJson(bimLoader.getRawJson());
         DBus.setBim(bimLoader.getBim());
 
-        Thread simulationMoving = new Thread(new Moving());
-        simulationMoving.start();
-
         // TCP_SERVER
-        /*log.info("Start tcp server");
-        new TCPServer().start();*/
+        log.info("Starting tcp server");
+        TCPServer server = new TCPServer();
+        server.start();
 
         // TCP_CLIENT
-        log.info("Start tcp client");
+        log.info("Starting tcp client");
         new TCPClient();
     }
 }
