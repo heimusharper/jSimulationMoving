@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Класс моделирования
  */
-public class Moving implements Runnable {
+public class Moving extends Thread {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
 
     @Override
@@ -49,7 +49,7 @@ public class Moving implements Runnable {
         for (int i = 0; i < acceptRepeat; i++) {
             traffic.footTraffic(time);
             timeModel += time;
-            try { Thread.sleep(1L); } catch (InterruptedException e) {e.printStackTrace();}
+            try { sleep(1L); } catch (InterruptedException e) {e.printStackTrace();}
         }
         log.debug("getSafetyZone: {}", bim.getSafetyZone().getNumOfPeople());
 
