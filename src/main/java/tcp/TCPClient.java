@@ -27,10 +27,6 @@
 
 package tcp;
 
-import bus.EBus;
-import tools.DangerousFactorOfFireEvent;
-import tools.EventHandler;
-
 /**
  * TCP клиент. Ждет внешних команд и сигналы об изменениях показаний сенсоров
  * <p>
@@ -39,8 +35,7 @@ import tools.EventHandler;
 public class TCPClient {
 
     public TCPClient() {
-        EventHandler.registeredOnBus();
-        EBus.post(new DangerousFactorOfFireEvent(5));
+
     }
 
     // В этом классе инициализируютс события от сети: изменение температуруы,
