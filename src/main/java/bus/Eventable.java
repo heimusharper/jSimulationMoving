@@ -1,11 +1,11 @@
-/*******************************************************************************
- * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
+/*
+ * Copyright (C) 2017 Chirkov Boris <b.v.chirkov@udsu.ru>
  *
  * Project website:       http://eesystem.ru
  * Organization website:  http://rintd.ru
  *
  * --------------------- DO NOT REMOVE THIS NOTICE -----------------------------
- * EBus is part of jSimulationMoving.
+ * Eventable is part of jSimulationMoving.
  *
  * jSimulationMoving is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,37 +23,41 @@
  *
  * This code is in BETA; some features are incomplete and the code
  * could be written better.
- ******************************************************************************/
+ */
 
 package bus;
 
-import com.google.common.eventbus.EventBus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Шина событиый {@link EventBus}
+ * Интерфейс работы с событиями
  * <p>
- * Initialization-on-demand holder idiom
- * <p>
- * Created by boris on 15.12.16.
+ * Created by boris on 16.01.17.
  */
-public class EBus {
+public interface Eventable {
+    /**
+     * Регистрирует класс (вешает слушателя на шину), в котором есть
+     * методы-обработчики событий
+     *
+     * @param object объект (класса)
+     */
+    default void register(Object object) {
+        EBus.getInstance().register(object);
+    }
 
     /**
-     * @return Экземпляр шины {@link EventBus}
+     * Снимает с регистрации класс с методами-обработчиками событий
+     *
+     * @param object объект (класса)
      */
-    static EventBus getInstance() {
-        return EBusHelper.BUS_INSTANCE;
+    default void unregister(Object object) {
+        EBus.getInstance().unregister(object);
     }
 
-    private static class EBusHelper {
-        private static final EventBus BUS_INSTANCE;
-
-        static {
-            BUS_INSTANCE = new EventBus(EBusHelper.class.getName());
-            LoggerFactory.getLogger(EBusHelper.class).info("Create instance bus events");
-        }
+    /**
+     * Инициализация события. Сообщение о событии на шину
+     *
+     * @param event сообщение
+     */
+    default void post(Object event) {
+        EBus.getInstance().post(event);
     }
-
 }
