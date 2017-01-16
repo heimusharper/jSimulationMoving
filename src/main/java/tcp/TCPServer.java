@@ -32,7 +32,7 @@ import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulation.Moving;
-import tools.CounterPeopleHandler;
+import tools.ChangePeopleEvent;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -146,7 +146,7 @@ public class TCPServer extends Thread {
          *
          * @throws IOException смотри описание {@link IOException}
          */
-        @Subscribe private void sendData(CounterPeopleHandler handler) throws IOException {
+        @Subscribe private void sendData(ChangePeopleEvent handler) throws IOException {
             double numOfPeople = handler.getNumOfPeople();
             String zid = handler.getZid();
             //            zid.substring(zid.length() - 5, zid.length()).getBytes()

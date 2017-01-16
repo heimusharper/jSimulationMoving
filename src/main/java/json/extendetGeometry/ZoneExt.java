@@ -27,12 +27,14 @@
 
 package json.extendetGeometry;
 
+import bus.EBus;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import json.geometry.Zone;
+import tools.ChangePeopleEvent;
 
 import java.util.ArrayList;
 
@@ -210,6 +212,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     public void addPeople(double people) {
         setNumOfPeople(getNumOfPeople() + people);
+        EBus.post(new ChangePeopleEvent(getId(), getNumOfPeople()));
     }
 
     /**
@@ -219,6 +222,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     public void removePeople(double people) {
         setNumOfPeople(getNumOfPeople() - people);
+        EBus.post(new ChangePeopleEvent(getId(), getNumOfPeople()));
     }
 
     public void setNumberExit(int numberExit) {
