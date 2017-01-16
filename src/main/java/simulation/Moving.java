@@ -49,7 +49,7 @@ public class Moving extends Thread {
         for (int i = 0; i < acceptRepeat; i++) {
             traffic.footTraffic(time);
             timeModel += time;
-            try { sleep(1L); } catch (InterruptedException e) {e.printStackTrace();}
+            try { sleep(500L); } catch (InterruptedException e) {e.printStackTrace();}
         }
         log.debug("getSafetyZone: {}", bim.getSafetyZone().getNumOfPeople());
 
