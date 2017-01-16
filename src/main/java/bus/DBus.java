@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
  *
  * Project website:       http://eesystem.ru
@@ -23,7 +23,7 @@
  *
  * This code is in BETA; some features are incomplete and the code
  * could be written better.
- ******************************************************************************/
+ */
 
 package bus;
 
@@ -35,7 +35,13 @@ import json.extendetGeometry.BIMExt;
  */
 public class DBus {
 
+    /**
+     * Сырой json
+     */
     private static String rawJson;
+    /**
+     * Разобраный json
+     */
     private static BIMExt bim;
 
     public static String getRawJson() {
