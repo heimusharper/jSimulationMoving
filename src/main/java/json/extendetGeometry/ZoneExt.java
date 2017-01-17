@@ -27,7 +27,7 @@
 
 package json.extendetGeometry;
 
-import bus.EBus;
+import bus.Eventable;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
  * <p>
  * Created by boris on 17.12.16.     Modification of 27.12.2016
  */
-public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
+public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Eventable {
 
     /**
      * Минимальное и максимальное значение по оси Z
@@ -122,8 +122,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     private Polygon getPolygon() {
         double[][][] xyz = getXyz();
-        if (xyz == null)
-            return null; // если геометрии нет, то и в полигон не превратить
+        if (xyz == null) return null; // если геометрии нет, то и в полигон не превратить
         GeometryFactory mGF = new GeometryFactory();
         // переструктурируем геометрию колец в Coordinate[][]
         // внешнее кольцо
@@ -141,17 +140,13 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
             for (int k = 1; k < xyz.length; k++) {
                 geomInt[k - 1] = new Coordinate[xyz[k].length];
                 for (int l = 0; l < xyz[k].length; l++) {
-                    geomInt[k - 1][l] = new Coordinate(xyz[k][l][0],
-                            xyz[k][l][1]);
+                    geomInt[k - 1][l] = new Coordinate(xyz[k][l][0], xyz[k][l][1]);
                 }
-                internalRings[k - 1] = new LinearRing(
-                        new CoordinateArraySequence(geomInt[k - 1]), mGF);
+                internalRings[k - 1] = new LinearRing(new CoordinateArraySequence(geomInt[k - 1]), mGF);
             } // for
         } // if
 
-        return new Polygon(
-                new LinearRing(new CoordinateArraySequence(geomOut), mGF),
-                internalRings, mGF);
+        return new Polygon(new LinearRing(new CoordinateArraySequence(geomOut), mGF), internalRings, mGF);
     }
 
     /**
@@ -212,7 +207,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     public void addPeople(double people) {
         setNumOfPeople(getNumOfPeople() + people);
-        EBus.post(new ChangePeopleEvent(getId(), getNumOfPeople()));
     }
 
     /**
@@ -222,7 +216,12 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
      */
     public void removePeople(double people) {
         setNumOfPeople(getNumOfPeople() - people);
-        EBus.post(new ChangePeopleEvent(getId(), getNumOfPeople()));
+    }
+
+    /* При каждом вызове инициируется событие об изменении людей, которое информируетм метод TCPServer#sendData() */
+    @Override public void setNumOfPeople(double numOfPeople) {
+        super.setNumOfPeople(numOfPeople);
+        post(new ChangePeopleEvent(getId(), getNumOfPeople()));
     }
 
     public void setNumberExit(int numberExit) {
@@ -282,8 +281,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> {
             if (t.getId().equals(tUuid)) return t;
         }
         throw new NullPointerException(
-                "The Transition is not find. Incorrect UUID or the Transition"
-                        + " does not exist");
+                "The Transition is not find. Incorrect UUID or the Transition" + " does not exist");
     }
 
     /**
