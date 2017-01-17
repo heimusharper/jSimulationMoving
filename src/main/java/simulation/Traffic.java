@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 
 class Traffic {
-    private final static Logger log = LoggerFactory.getLogger(Traffic.class);
+    private final static Logger log             = LoggerFactory.getLogger(Traffic.class);
     /**
      * Коэффициент проходимости зоны. Если значение проходимости зоны ниже этого
      * значения, зона не проходима
@@ -158,8 +158,7 @@ class Traffic {
      *
      * @param time временной интервал моделирования эвакуации в секундах
      */
-    void footTraffic(double time) {
-
+    int footTraffic(double time) {
         // Списки на выход (в количестве numExit);
         final ArrayList<ArrayList<ZoneExt>> zoneOut = new ArrayList<>(NUM_OF_EXITS);
         for (int i = 0; i < NUM_OF_EXITS; i++)
@@ -225,11 +224,10 @@ class Traffic {
                                 for (TransitionExt transit : receivingArea.getTransitionList()) {
                                     // Портал не подлежит обработке
                                     if (receivingArea.getNTay() <= transit.getNTay() || transit.hasNullZone()) continue;
-                                    // Ссылки от портала
-                                    String idZone1 = transit.getZoneAId();// на помещение A
-                                    String idZone2 = transit.getZoneBId();// на помещение B
-                                    ZoneExt radiatingArea = zones
-                                            .get((idZone1.equals(receivingArea.getId())) ? idZone2 : idZone1);
+                                    String idZone1 = transit.getZoneAId();// Ссылки от портала на зону A
+                                    ZoneExt radiatingArea = zones.get((receivingArea.getId().equals(idZone1)) ?
+                                            transit.getZoneBId() :
+                                            idZone1);
                                     if (!radiatingArea.isEmpty()) {
                                         double numOfPeopleInZone = radiatingArea.getNumOfPeople();
                                         double sZone = radiatingArea.getArea();
@@ -282,8 +280,9 @@ class Traffic {
             } while (xyz); // do 1
 
             // Выход из цикла моделирования
-            if (isEnded()) break;
+            if (isEnded()) return kkktay;
         }// kkktay=1
+        return -1;
     }
 
     /**

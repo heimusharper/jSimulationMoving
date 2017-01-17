@@ -23,8 +23,8 @@
 
 package simulation;
 
-import bus.DBus;
 import json.extendetGeometry.BIMExt;
+import json.extendetGeometry.BIMLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +34,16 @@ import org.slf4j.LoggerFactory;
 public class Moving extends Thread {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
 
-    @Override
-    public void run() {
+    @Override public void run() {
+        // Загрузка структуры здания
+        // BIM
+        ClassLoader mainClassLoader = Moving.class.getClassLoader();
+        BIMLoader<BIMExt> bimLoader = new BIMLoader<>(mainClassLoader.
+                getResourceAsStream("segment-6k-v2.1.json"), BIMExt.class);
+
         log.info("Running thread with simulation moving");
 
-        BIMExt bim = DBus.getBim();
+        BIMExt bim = bimLoader.getBim();
         Traffic traffic = new Traffic(bim);
         // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         int acceptRepeat = 500;
@@ -47,13 +52,18 @@ public class Moving extends Thread {
         double time = 10; // Интервал моделирования эвакуации, c
 
         for (int i = 0; i < acceptRepeat; i++) {
-            traffic.footTraffic(time);
+            int balance = traffic.footTraffic(time);
             timeModel += time;
+
+            if (balance != -1) {
+                timeModel += balance * time;
+                break;
+            }
+
             try { sleep(500L); } catch (InterruptedException e) {e.printStackTrace();}
         }
-        log.debug("getSafetyZone: {}", bim.getSafetyZone().getNumOfPeople());
-
-        log.info("Finish simulation moving");
+        log.info("Successful finish simulation. Total: number of people in Safety zone: {}, simulation time: {}",
+                bim.getSafetyZone().getNumOfPeople(), timeModel);
     }
 
 }
