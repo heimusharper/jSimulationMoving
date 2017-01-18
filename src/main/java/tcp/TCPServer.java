@@ -41,6 +41,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import static java.lang.System.arraycopy;
 import static tools.Prop.getServerPort;
@@ -60,7 +61,8 @@ public class TCPServer extends Thread {
      * name. Automatically generated names are of the form
      * {@code "Thread-"+}<i>n</i>, where <i>n</i> is an integer.
      */
-    public TCPServer() {}
+    public TCPServer() {
+    }
 
     /**
      * When an object implementing interface <code>Runnable</code> is used
@@ -97,8 +99,7 @@ public class TCPServer extends Thread {
 
             // Стартуем новыйе поток для клиента
             try {
-                ClientHandler clientHandler = new ClientHandler(activeSocket);
-                new Thread(clientHandler).start();
+                new ClientHandler(activeSocket).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -109,7 +110,7 @@ public class TCPServer extends Thread {
      * Обработчик подключенного клиента.
      * Имеет в своем составе два метода: чтение из потока и запись данных в поток
      */
-    private class ClientHandler implements Runnable, Eventable {
+    private class ClientHandler extends Thread implements Eventable {
         private BufferedOutputStream bos;
         private BufferedInputStream  bis;
         private Socket               clientSocket;
@@ -139,6 +140,8 @@ public class TCPServer extends Thread {
          * @throws IOException смотри описание {@link IOException}
          */
         @Subscribe private void sendData(ChangePeopleEvent handler) throws IOException {
+            if (getClientSocket().isClosed() || !getClientSocket().isConnected()) return;
+
             String json = new Gson().toJson(handler);
             byte[] data = new byte[Integer.BYTES + json.length()];
             byte[] headerSize = Ints.toByteArray(json.length());
