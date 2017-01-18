@@ -35,11 +35,10 @@ public class Moving extends Thread {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
 
     @Override public void run() {
-        // Загрузка структуры здания
-        // BIM
-        ClassLoader mainClassLoader = Moving.class.getClassLoader();
-        BIMLoader<BIMExt> bimLoader = new BIMLoader<>(mainClassLoader.
-                getResourceAsStream("segment-6k-v2.1.json"), BIMExt.class);
+        // Загрузка структуры здания BIM
+        ClassLoader thisClassLoader = Moving.class.getClassLoader();
+        BIMLoader<BIMExt> bimLoader = new BIMLoader<>(thisClassLoader.
+                getResourceAsStream("Stand-v1.2.json"), BIMExt.class);
 
         log.info("Running thread with simulation moving");
 
@@ -47,13 +46,17 @@ public class Moving extends Thread {
         Traffic traffic = new Traffic(bim);
         // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         int acceptRepeat = 500;
+        log.info("Set max cycle index {}", acceptRepeat);
 
         double timeModel = 0.0; // Текущее время моделирования эвакуации, c
-        double time = 10; // Интервал моделирования эвакуации, c
+        double time = 6; // Интервал моделирования эвакуации, c
 
         for (int i = 0; i < acceptRepeat; i++) {
             int balance = traffic.footTraffic(time);
             timeModel += time;
+
+            log.info("In progress: number of people in Safety zone: {}, simulation time: {}",
+                    bim.getSafetyZone().getNumOfPeople(), timeModel);
 
             if (balance != -1) {
                 timeModel += balance * time;
@@ -62,6 +65,7 @@ public class Moving extends Thread {
 
             try { sleep(500L); } catch (InterruptedException e) {e.printStackTrace();}
         }
+
         log.info("Successful finish simulation. Total: number of people in Safety zone: {}, simulation time: {}",
                 bim.getSafetyZone().getNumOfPeople(), timeModel);
     }

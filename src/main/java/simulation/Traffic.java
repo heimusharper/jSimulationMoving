@@ -84,6 +84,35 @@ class Traffic {
     }
 
     /**
+     * @param l     ширина проема, м
+     * @param dElem плотность в элементе
+     * @return Скорость потока в проеме в зависимости от плотности, м/мин
+     */
+    private static double vElem(final double l, final double dElem) {
+        double v0 = 100; // м/мин
+        double d0 = 0.65;
+        double a = 0.295;
+        double v0k;
+        if (dElem >= 9) v0k = 10 * (2.5 + 3.75 * l) / d0; // 07.12.2016
+        else if (dElem > d0) {
+            double m = dElem >= 5 ? 1.25 - 0.05 * dElem : 1;
+            v0k = v0 * (1.0 - a * Math.log(dElem / d0)) * m;
+        } else v0k = v0;
+        return v0k;
+    }
+
+    /**
+     * @param dElem плотность в элементе
+     * @return Скорость потока по горизонтальному пути, м/мин
+     */
+    private static double vElem(final double dElem) {
+        double v0 = 100; // м/мин
+        double d0 = 0.51;
+        double a = 0.295;
+        return dElem > d0 ? v0 * (1.0 - a * Math.log(dElem / d0)) : v0;
+    }
+
+    /**
      * Метод сортировки плотностей перед выходами
      *
      * @param dZone0 массив плотностей в зонах
@@ -92,7 +121,7 @@ class Traffic {
      *               true, то включается обратная сортировка, если параметр
      *               отсутствует, то сортировка по возрастанию
      */
-    private static void sortingDensity(final double[] dZone0, final int[] iiWork, boolean... b) {
+    private void sortingDensity(final double[] dZone0, final int[] iiWork, boolean... b) {
         final float loadFactor = 1.247330950103979f;
         int step = dZone0.length;
         boolean isEnd = false;
@@ -122,35 +151,6 @@ class Traffic {
                 } else isEnd = false;
             }
         }
-    }
-
-    /**
-     * @param l     ширина проема, м
-     * @param dElem плотность в элементе
-     * @return Скорость потока в проеме в зависимости от плотности, м/мин
-     */
-    private static double vElem(final double l, final double dElem) {
-        double v0 = 100; // м/мин
-        double d0 = 0.65;
-        double a = 0.295;
-        double v0k;
-        if (dElem >= 9) v0k = 10 * (2.5 + 3.75 * l) / d0; // 07.12.2016
-        else if (dElem > d0) {
-            double m = dElem >= 5 ? 1.25 - 0.05 * dElem : 1;
-            v0k = v0 * (1.0 - a * Math.log(dElem / d0)) * m;
-        } else v0k = v0;
-        return v0k;
-    }
-
-    /**
-     * @param dElem плотность в элементе
-     * @return Скорость потока по горизонтальному пути, м/мин
-     */
-    private static double vElem(final double dElem) {
-        double v0 = 100; // м/мин
-        double d0 = 0.51;
-        double a = 0.295;
-        return dElem > d0 ? v0 * (1.0 - a * Math.log(dElem / d0)) : v0;
     }
 
     /**
@@ -409,54 +409,6 @@ class Traffic {
             break;
         }
         return dElem > d0 ? v0 * (1.0 - a * Math.log(dElem / d0)) : v0;
-    }
-
-    /**
-     * 30.12.2016 - Колодкин
-     *
-     * @param radiatingArea - зона отдающая
-     * @param receivingArea - зона принимающая
-     * @param exit          - переход между отдающей и принимающей зонами
-     * @param dxyz          - точность представления координат
-     * @param tay           - временной шаг, мин
-     * @return
-     */
-    @SuppressWarnings("unused") private double procZones(ZoneExt radiatingArea,/* String idRadiatingArea,*/
-            ZoneExt receivingArea, TransitionExt exit, double dxyz, double tay) {
-        // Отдающая зона
-        //        final ZoneExt radiatingArea = zones.get(idRadiatingArea);
-        final int zoneType = radiatingArea.getType();              // тип
-        final double dPeopleZone = radiatingArea.getNumOfPeople(); // кол.людей
-        final double sZone = radiatingArea.getArea();              // Площадь
-        double vZone = Double.NaN;
-        final double dZone = dPeopleZone / sZone;        // плотность, чел/м2
-        switch (zoneType) {
-        case ZoneExt.FLOOR:
-            vZone = vElem(dZone);
-            break;
-        case ZoneExt.STAIRS:
-            final double hElem = radiatingArea.getMinZ();    // отдающая
-            final double hElem0 = receivingArea.getMinZ();    // принимающая
-            final double dh = hElem - hElem0;    // Разница высот зон
-            if (Math.abs(dh) >= dxyz) {
-                int direction = (hElem > hElem0) ? Direction.DOWN : Direction.UP;
-                receivingArea.setDirection(direction);
-                vZone = vElemZ(direction, dZone);
-            } else vZone = vElem(dZone);
-            break;
-        default:
-            log.info("Неопределенный (procZones) тип зоны");
-            break;
-        }
-        final double lTransition = exit.getWidth();     // Ширина проема
-        double vTransition = vElem(lTransition, dZone);
-        final double v = receivingArea.getPermeability() * Math.min(vZone, vTransition); // Скорость на выходе
-        final double d1 = lTransition * v * tay / sZone;
-        double d2 = (d1 >= 1) ? 1 : d1;
-        final double dPeopl = d2 * dPeopleZone; // Изменение кол.людей
-        final double delta = dPeopleZone - dPeopl; // Отдающая
-
-        return (delta > 0) ? dPeopl : dPeopleZone;
     }
 
     /**
