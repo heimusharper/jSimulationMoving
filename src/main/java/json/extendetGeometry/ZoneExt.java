@@ -90,7 +90,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
         // Если однажды посчитали, в дальнейшем возвращаем
         if (zMin != Double.MAX_VALUE) return zMin;
 
-        for (int i = 0; i < getXyz().length; i++) {
+        for (int i = 0; i < getXyz()[0].length; i++) {
             final double z = getXyz(0, i, 2);
             if (z <= zMin) zMin = z;
         }
@@ -103,7 +103,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     public double getMaxZ() {
         if (zMax != -Double.MIN_VALUE) return zMax;
 
-        for (int i = 0; i < getXyz().length; i++) {
+        for (int i = 0; i < getXyz()[0].length; i++) {
             final double z = getXyz(0, i, 2);
             if (z >= zMax) zMax = z;
         }

@@ -27,11 +27,9 @@
 
 package core;
 
-import bus.DBus;
-import json.extendetGeometry.BIMExt;
-import json.extendetGeometry.BIMLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import simulation.Moving;
 import tcp.TCPClient;
 import tcp.TCPServer;
 
@@ -44,16 +42,9 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws InstantiationException, IllegalAccessException {
-        // Загрузка структуры здания
-        // BIM
-        ClassLoader mainClassLoader = Main.class.getClassLoader();
-        BIMLoader<BIMExt> bimLoader = new BIMLoader<>(mainClassLoader.
-                getResourceAsStream("Stand-v1.2.json"), BIMExt.class);
 
-        // Загрузка данных в шину
-        DBus.setRawJson(bimLoader.getRawJson());
-        DBus.setBim(bimLoader.getBim());
-
+        Moving moving = new Moving();
+        moving.start();
         // TCP_SERVER
         log.info("Starting tcp server");
         TCPServer server = new TCPServer();

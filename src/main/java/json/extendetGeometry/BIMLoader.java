@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
  *
  * Project website:       http://eesystem.ru
@@ -23,12 +23,11 @@
  *
  * This code is in BETA; some features are incomplete and the code
  * could be written better.
- ******************************************************************************/
+ */
 
 package json.extendetGeometry;
 
 import com.google.gson.Gson;
-import errors.ErrorCode;
 import json.geometry.BIM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,7 @@ import java.io.InputStreamReader;
  *
  * @param <B> класс, описывающий структуру здания. <br>
  */
-public class BIMLoader<B extends BIM> {
+public class BIMLoader<B extends BIM<?, ?>> {
 
     private static final Logger log = LoggerFactory.getLogger(BIMLoader.class);
 
@@ -68,34 +67,17 @@ public class BIMLoader<B extends BIM> {
             String s;
             while ((s = br.readLine()) != null) res += s;
 
-            checkResults(res);
-
-            bim = new Gson().fromJson(res, clazz); // Парсинг *.json
+            if (res.isEmpty()) {
+				bim = clazz.newInstance();
+            	log.error("File *.json is empty", new Error());
+            } else
+				bim = new Gson().fromJson(res, clazz);
             log.info("Successful created instance for class {} and parse "
                     + "json", className);
-        } catch (final IOException e) {
+        } catch (final IOException | InstantiationException | IllegalAccessException e) {
             log.error("Fail: parse json to {} structure. Any problems: ",
                     className, e);
         }
-    }
-
-    /**
-     * Проверка на наличие содержимого в файле
-     *
-     * @param res строка с содержанием *.json файла
-     */
-    private static void checkResults(String res) {
-        if (res.isEmpty()) {
-            /*
-              Если файл пустой, то завершаем программу с
-              кодом ошибки {@link ErrorCode.FILE_EMPTY}, и выводим сообщение об
-              ошибке
-             */
-            log.error("File *.json is empty", new Error());
-            System.exit(ErrorCode.FILE_EMPTY);
-        }
-
-        log.info("Successful read json");
     }
 
     /**

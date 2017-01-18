@@ -36,7 +36,7 @@ import java.util.ArrayList;
  * @param <Z> Класс, расширенный {@link Zone}
  * @author mag
  */
-public abstract class Room<Z extends Zone> {
+public abstract class Room<Z extends Zone<?, ?, ?>> {
 
     /**
      * Наименование помещения

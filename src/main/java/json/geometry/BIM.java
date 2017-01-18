@@ -34,7 +34,7 @@ import java.util.ArrayList;
  *
  * @author mag
  */
-public abstract class BIM<R extends Room, T extends Transition> {
+public abstract class BIM<R extends Room<?>, T extends Transition> {
 
     /**
      * Общее название здания
