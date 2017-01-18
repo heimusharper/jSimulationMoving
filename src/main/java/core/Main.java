@@ -42,16 +42,13 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws InstantiationException, IllegalAccessException {
-
-        Moving moving = new Moving();
-        moving.start();
-        // TCP_SERVER
+    	// TCP_SERVER
         log.info("Starting tcp server");
         TCPServer server = new TCPServer();
         server.start();
 
         // TCP_CLIENT
-        log.info("Starting tcp client");
-        new TCPClient();
+        /*log.info("Starting tcp client");
+        new TCPClient();*/
     }
 }
