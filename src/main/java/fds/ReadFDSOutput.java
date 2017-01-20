@@ -30,7 +30,10 @@ package fds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -46,52 +49,50 @@ public class ReadFDSOutput {
 
     private static final Logger log = LoggerFactory.getLogger(ReadFDSOutput.class);
 
-    public static HashMap<Double, ArrayList<DevcHelper>> readDevc(String fileName) throws FileNotFoundException {
-        // open file input stream
-        InputStream is = ReadFDSOutput.class.getClassLoader().getResourceAsStream(fileName);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
-        // read file line by line
-        String l;
-        Scanner scanner;
+    /**
+     * Чтение результатов моделирования. Результаты представлены в формате csv, где разделителем служит запятая.
+     * Первые два индекса именования девайсов должны обозначать тип девайса. Типы задаются в классе {@link DevcHelper}
+     *
+     * @param fileName имя файла. Файл должен лежать в каталоге ресуросов.
+     * @return Карта, где в качестве ключа - время (значения первой колонки), значения - список девайсов
+     */
+    public static HashMap<Double, ArrayList<DevcHelper>> readDevc(String fileName) {
         int column = 0;
         int line = 0;
+        double time = 0;
         HashMap<Double, ArrayList<DevcHelper>> empMap = new HashMap<>();
-        ArrayList<Integer> types = new ArrayList<>();
-        ArrayList<String> ids = new ArrayList<>();
+        ArrayList<Integer> types = new ArrayList<>(); // Список типов девайсов
+        ArrayList<String> ids = new ArrayList<>(); // Список идентификаторов помещений
 
-        try {
-            while ((l = reader.readLine()) != null) { // Получаем строку из файла
-                scanner = new Scanner(l);
-                scanner.useDelimiter(",");
+        // open file input stream
+        try (InputStream is = ReadFDSOutput.class.getClassLoader().getResourceAsStream(fileName);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            // read file line by line
+            for (String l = reader.readLine(); l != null; l = reader.readLine(), line++, time = 0, column = 0) {
+                /* Список показателей датчиков строки в момент времени time */
                 ArrayList<DevcHelper> empList = new ArrayList<>();
-                double time = 0;
 
                 col:
-                while (scanner.hasNext()) {
-                    String data = scanner.next();
-                    data = data.replaceAll("\"", ""); // Обрасываем лишние ковычки
+                for (Scanner scanner = new Scanner(l).useDelimiter(","); scanner.hasNext(); column++) {
+                    String data = scanner.next().replaceAll("\"", ""); // Обрасываем лишние ковычки
                     switch (line) {
-                    case 0:
-                        log.info("Пропустили строку с единицами измерения");
+                    case 0: // пропускаем первую строку
                         break col;
                     case 1:
                         // Смотрим сколько столбцов разного типа: температура и видимость
                         // Группируем номера столбцов по типам
                         types.add(identifyType(data.contains("Time") ? data : data.substring(0, 2)));
-                        if (column > 0) {
-                            try {
-                                ids.add(data.substring(3));
-                            } catch (StringIndexOutOfBoundsException e) {
-                                log.error("Source {} ", data, e);
-                            }
+                        if (column > 0) try {
+                            if (data.length() > 3) ids.add(data.substring(3));
+                            else throw new Error("Length string < 3. Source: " + data);
+                        } catch (StringIndexOutOfBoundsException e) {
+                            log.error("Source {} ", data, e);
                         }
                         break;
                     default: // Сбор данных
-                        if (types.get(column) == UNKNOWN) {
-                            throw new Exception(String.format("Unknown column type. Column = %d,  Type = %d", column,
-                                    types.get(column)));
-                        }
+                        if (types.get(column) == UNKNOWN) throw new Exception(
+                                String.format("Unknown column type. Column = %d,  Type = %d", column,
+                                        types.get(column)));
 
                         double value = Double.parseDouble(data);
                         if (column == TIME) { // Берем время из первой колонки
@@ -106,15 +107,9 @@ public class ReadFDSOutput {
                         emp.setTime(time);
                         empList.add(emp);
                     }
-                    column++;
                 }
-
                 if (line >= 2) empMap.put(time, empList);
-                column = 0;
-                line++;
             }
-            //close reader
-            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
