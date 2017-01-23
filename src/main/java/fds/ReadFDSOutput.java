@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 
 import static fds.DevcHelper.*;
@@ -54,13 +54,13 @@ public class ReadFDSOutput {
      * Первые два индекса именования девайсов должны обозначать тип девайса. Типы задаются в классе {@link DevcHelper}
      *
      * @param fileName имя файла. Файл должен лежать в каталоге ресуросов.
-     * @return Карта, где в качестве ключа - время (значения первой колонки), значения - список девайсов
+     * @return {@link LinkedHashMap}, где в качестве ключа - время (значения первой колонки), значения - список девайсов
      */
-    public static HashMap<Double, ArrayList<DevcHelper>> readDevc(String fileName) {
+    public static LinkedHashMap<Double, ArrayList<DevcHelper>> readDevc(String fileName) {
         int column = 0;
         int line = 0;
         double time = 0;
-        HashMap<Double, ArrayList<DevcHelper>> empMap = new HashMap<>();
+        LinkedHashMap<Double, ArrayList<DevcHelper>> empMap = new LinkedHashMap<>();
         ArrayList<Integer> types = new ArrayList<>(); // Список типов девайсов
         ArrayList<String> ids = new ArrayList<>(); // Список идентификаторов помещений
 
