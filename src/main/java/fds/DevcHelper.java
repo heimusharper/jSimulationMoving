@@ -27,14 +27,15 @@
 
 package fds;
 
+import json.extendetGeometry.SensorExt;
+
 /**
+ * Структура строки выходного файла FDS
+ * <p>
  * Created by boris on 19.01.17.
  */
 public class DevcHelper {
-    static final int UNKNOWN     = -1;
-    static final int TIME        = 0;
-    static final int TEMPERATURE = 1;
-    static final int VISIBILITY  = 2;
+    static final int TIME = 0;
 
     private String id;
     private double value;
@@ -44,13 +45,13 @@ public class DevcHelper {
     static int identifyType(String strType) {
         switch (strType) {
         case "SD":
-            return VISIBILITY;
+            return SensorExt.SMOKE;
         case "TD":
-            return TEMPERATURE;
+            return SensorExt.TEMPERATURE;
         case "Time":
             return TIME;
         default:
-            return UNKNOWN;
+            return SensorExt.UNKNOWN;
         }
     }
 
