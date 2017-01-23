@@ -37,6 +37,7 @@ import json.geometry.Zone;
 import tools.ChangePeopleEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Класс, расширяющий базовый {@link Zone}.
@@ -76,11 +77,38 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     /**
      * Списко дверей, которые соединяются с зоной
      */
-    private ArrayList<TransitionExt> transitionList = new ArrayList<>();
+    private ArrayList<TransitionExt>   transitionList = new ArrayList<>();
+    /**
+     * HashMap сенсоров
+     */
+    private HashMap<String, SensorExt> sensors        = new HashMap<>();
 
     {
         setPermeability(1);
         setNTay(0);
+        collectSensors();
+    }
+
+    /**
+     * Собирает все сенсоры в карту
+     */
+    private void collectSensors() {
+        for (SensorExt se : getSensors()) sensors.put(se.getId(), se);
+    }
+
+    /**
+     * @param uuid идентификатор сенсора
+     * @return Сенсор по идентификатору
+     */
+    public SensorExt getSensor(String uuid) {
+        return sensors.get(uuid);
+    }
+
+    /**
+     * @return {@link HashMap}, где в качестве ключа - uuid сенсора.
+     */
+    public HashMap<String, SensorExt> getSensorsMap() {
+        return sensors;
     }
 
     /**
@@ -198,6 +226,13 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      */
     public void setPermeability(double permeabilityValue) {
         this.permeability = permeabilityValue;
+    }
+
+    /**
+     * Позволяет обновить значение проходимости помещения
+     */
+    private void updatePermeability() {
+
     }
 
     /**
