@@ -61,22 +61,19 @@ public class BIMLoader<B extends BIM<?, ?>> {
     public BIMLoader(final InputStream is, final Class<B> clazz) {
         final String className = clazz.getName();
 
-        log.info("Start read json data from stream");
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(is))) {
+        log.info("Starting read json");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String s;
             while ((s = br.readLine()) != null) res += s;
 
             if (res.isEmpty()) {
-				bim = clazz.newInstance();
-            	log.error("File *.json is empty", new Error());
-            } else
-				bim = new Gson().fromJson(res, clazz);
-            log.info("Successful created instance for class {} and parse "
-                    + "json", className);
+                bim = clazz.newInstance();
+                log.error("File *.json is empty", new Error());
+            } else bim = new Gson().fromJson(res, clazz);
+
+            log.info("Successful reading json and creating instance for class {} and parse " + "json", className);
         } catch (final IOException | InstantiationException | IllegalAccessException e) {
-            log.error("Fail: parse json to {} structure. Any problems: ",
-                    className, e);
+            log.error("Fail: parse json to {} structure. Any problems: ", className, e);
         }
     }
 
