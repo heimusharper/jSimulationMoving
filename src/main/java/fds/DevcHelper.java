@@ -27,7 +27,7 @@
 
 package fds;
 
-import json.extendetGeometry.SensorExt;
+import static json.extendetGeometry.SensorExt.*;
 
 /**
  * Структура строки выходного файла FDS
@@ -45,13 +45,13 @@ public class DevcHelper {
     static int identifyType(String strType) {
         switch (strType) {
         case "SD":
-            return SensorExt.SMOKE;
+            return T_SMOKE;
         case "TD":
-            return SensorExt.TEMPERATURE;
+            return T_TEMPERATURE;
         case "Time":
             return TIME;
         default:
-            return SensorExt.UNKNOWN;
+            return UNKNOWN;
         }
     }
 
@@ -59,7 +59,7 @@ public class DevcHelper {
         return id;
     }
 
-    public void setId(String id) {
+    void setId(String id) {
         this.id = id;
     }
 
@@ -67,15 +67,11 @@ public class DevcHelper {
         return value;
     }
 
-    public void setValue(double value) {
+    void setValue(double value) {
         this.value = value;
     }
 
-    public double getTime() {
-        return time;
-    }
-
-    public void setTime(double time) {
+    void setTime(double time) {
         this.time = time;
     }
 
@@ -83,7 +79,7 @@ public class DevcHelper {
         return type;
     }
 
-    public void setType(int type) {
+    void setType(int type) {
         this.type = type;
     }
 

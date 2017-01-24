@@ -38,7 +38,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
-import static fds.DevcHelper.*;
+import static fds.DevcHelper.TIME;
+import static fds.DevcHelper.identifyType;
+import static json.extendetGeometry.SensorExt.UNKNOWN;
 
 /**
  * Чтение выходного файла FDS *_devc.csv
