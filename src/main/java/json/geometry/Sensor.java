@@ -42,21 +42,22 @@ public abstract class Sensor {
      * 550e8400-e29b-41d4-a716-446655440000
      */
     private String id;
-
     /**
      * Координаты установки сенсора.
      */
     private double x, y, z;
-
     /**
      * Идентификатор беспроводного узла
      */
     private long deviceId;
-
     /**
      * Дополнительная информация
      */
     private String note;
+    /**
+     * Тип узла
+     */
+    private String type;
 
     public String getId() {
         return id;
@@ -104,5 +105,13 @@ public abstract class Sensor {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
