@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
+/*
+ * Copyright (C) 2017 Chirkov Boris <b.v.chirkov@udsu.ru>
  *
  * Project website:       http://eesystem.ru
  * Organization website:  http://rintd.ru
@@ -23,14 +23,99 @@
  *
  * This code is in BETA; some features are incomplete and the code
  * could be written better.
- ******************************************************************************/
+ */
 
 package json.extendetGeometry;
 
 import json.geometry.Sensor;
 
 /**
- * Created by boris on 17.12.16.
+ * Класс, расширяющий базовый {@link Sensor}
+ * Предназначен для полей, которые не входят в *.json файл с геометрией
+ * <p>
+ * Created by boris on 17.12.16.    Modification of 23.01.2017
  */
 public class SensorExt extends Sensor {
+    /* STATUSES */
+    /**
+     * Статус узла - неактивен
+     */
+    public static final int INACTIVE = 0;
+    /**
+     * Статус узла - активен
+     */
+    public static final int ACTIVE   = 1;
+
+    /* TYPES */
+    /**
+     * Типа узла - неопределен
+     */
+    public static final int UNKNOWN       = -1;
+    /**
+     * Типа узла - температурный
+     */
+    public static final int T_TEMPERATURE = 1;
+    /**
+     * Типа узла - дымовой
+     */
+    public static final int T_SMOKE       = 2;
+
+    /* LIMITING VALUES */
+    /**
+     * Критическое значение параметра - по температуре (70 градусов по Цельсию)
+     */
+    public static final double V_TEMPERATURE = 70.0;
+    /**
+     * Критическое значение параметра - по видимости (20 метров)
+     */
+    public static final double V_VISIBLE     = 20.0;
+
+    /**
+     * Состояние сенсорного узла - Активен или Не активен
+     */
+    private int    status;
+    /**
+     * Значение по температуре
+     */
+    private double temperature;
+    /**
+     * Значение по дальности видимости
+     */
+    private double visible;
+
+    {
+        setStatus(INACTIVE);
+    }
+
+    public boolean isTemperature() {
+        return super.getType().equalsIgnoreCase("TEMPERATURE");
+    }
+
+    public boolean isSmoke() {
+        return super.getType().equalsIgnoreCase("SMOKE");
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public double getVisible() {
+        return visible;
+    }
+
+    public void setVisible(double visible) {
+        this.visible = visible;
+    }
 }
