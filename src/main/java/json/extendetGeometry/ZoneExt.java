@@ -37,7 +37,9 @@ import json.geometry.Zone;
 import tools.ChangePeopleEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+
+import static json.extendetGeometry.SensorExt.V_TEMPERATURE;
 
 /**
  * Класс, расширяющий базовый {@link Zone}.
@@ -77,38 +79,11 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     /**
      * Списко дверей, которые соединяются с зоной
      */
-    private ArrayList<TransitionExt>   transitionList = new ArrayList<>();
-    /**
-     * HashMap сенсоров
-     */
-    private HashMap<String, SensorExt> sensors        = new HashMap<>();
+    private ArrayList<TransitionExt> transitionList = new ArrayList<>();
 
     {
         setPermeability(1);
         setNTay(0);
-        collectSensors();
-    }
-
-    /**
-     * Собирает все сенсоры в карту
-     */
-    private void collectSensors() {
-        for (SensorExt se : getSensors()) sensors.put(se.getId(), se);
-    }
-
-    /**
-     * @param uuid идентификатор сенсора
-     * @return Сенсор по идентификатору
-     */
-    public SensorExt getSensor(String uuid) {
-        return sensors.get(uuid);
-    }
-
-    /**
-     * @return {@link HashMap}, где в качестве ключа - uuid сенсора.
-     */
-    public HashMap<String, SensorExt> getSensorsMap() {
-        return sensors;
     }
 
     /**
@@ -209,6 +184,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      * @return Значение проницаемости зоны
      */
     public double getPermeability() {
+        updatePermeability();
         return this.permeability;
     }
 
@@ -229,10 +205,21 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     }
 
     /**
-     * Позволяет обновить значение проходимости помещения
+     * Позволяет обновить значение проходимости помещения.
      */
     private void updatePermeability() {
+        ArrayList<SensorExt> sensors = getSensors();
+        double[] values = new double[sensors.size()];
+        int i;
 
+        for (i = 0; i < sensors.size(); i++) {
+            SensorExt s = sensors.get(i);
+            if (s.isTemperature()) values[i] = s.getTemperature() / V_TEMPERATURE;
+            //if (s.isSmoke()) values[i] = s.getVisible() / V_VISIBLE;
+        }
+
+        Arrays.sort(values);
+        setPermeability(1 - values[i - 1]);
     }
 
     /**
