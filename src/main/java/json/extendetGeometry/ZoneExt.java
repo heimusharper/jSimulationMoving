@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static json.extendetGeometry.SensorExt.V_TEMPERATURE;
+import static json.extendetGeometry.SensorExt.V_VISIBLE;
 
 /**
  * Класс, расширяющий базовый {@link Zone}.
@@ -210,16 +211,17 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     private void updatePermeability() {
         ArrayList<SensorExt> sensors = getSensors();
         double[] values = new double[sensors.size()];
-        int i;
 
-        for (i = 0; i < sensors.size(); i++) {
+        for (int i = 0; i < values.length; i++) {
             SensorExt s = sensors.get(i);
-            if (s.isTemperature()) values[i] = s.getTemperature() / V_TEMPERATURE;
-            //if (s.isSmoke()) values[i] = s.getVisible() / V_VISIBLE;
+            if (s.isTemperature()) values[i] = 1 - s.getTemperature() / V_TEMPERATURE;
+            else if (s.isSmoke()) values[i] = s.getVisible() / V_VISIBLE - 1;
         }
 
         Arrays.sort(values);
-        setPermeability(1 - values[i - 1]);
+        /* Берем минимальное значение. Если минимальное значение меньше 0, то проходимость равняется 0, иначе
+        полученное мнимальное значение. */
+        setPermeability((values[0] < 0) ? 0 : values[0]);
     }
 
     /**
