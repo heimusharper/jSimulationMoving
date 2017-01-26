@@ -51,23 +51,25 @@ public class Moving extends Thread {
         // Загрузка структуры здания BIM
         ClassLoader thisClassLoader = Moving.class.getClassLoader();
         BIMLoader<BIMExt> bimLoader = new BIMLoader<>(thisClassLoader.
-                getResourceAsStream("Stand-v1.2.json"), BIMExt.class);
+                getResourceAsStream("segment-6k-v2.2.json"), BIMExt.class);
 
         LinkedHashMap<Double, ArrayList<DevcHelper>> fdsData = ReadFDSOutput.readDevc("UdSU_devc.csv");
 
         BIMExt bim = bimLoader.getBim();
         Traffic traffic = new Traffic(bim);
-        // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
-        int acceptRepeat = 500;
-        log.info("Set max cycle index {}", acceptRepeat);
 
+        // Количество людей в здании, до эвакуации
+        double nop = bim.getNumOfPeople();
+        // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
+        // int acceptRepeat = 500;
         double timeModel = 0.0; // Текущее время моделирования эвакуации, c
         double time; // Интервал моделирования эвакуации, c
-
         double previousFdsTime = 0.0;
+
         /*for (int i = 0; i < acceptRepeat; i++) {*/
         for (Map.Entry<Double, ArrayList<DevcHelper>> d : fdsData.entrySet()) {
             double fdsTime = d.getKey();
+            if (fdsTime == 0.0) continue;
 
             for (ZoneExt ze : bim.getZones().values()) // по зонам
                 for (SensorExt se : ze.getSensors()) // по сенсорам в зоне
@@ -93,7 +95,7 @@ public class Moving extends Thread {
                     bim.getSafetyZone().getNumOfPeople(), timeModel);
 
             if (balance != -1) {
-                log.debug("fdsTome: {}", fdsTime);
+                log.debug("fdsTime: {}", fdsTime);
                 //timeModel += balance * fdsTime;
                 break;
             }
@@ -101,8 +103,7 @@ public class Moving extends Thread {
             /*try { sleep(500L); } catch (InterruptedException e) {e.printStackTrace();}*/
         }
 
-        log.info("Successful finish simulation. Total: number of people in Safety zone: {}, simulation time: {}",
-                bim.getSafetyZone().getNumOfPeople(), timeModel);
+        log.info("Successful finish simulation. Total: number of people in Safety zone: {} of {}, simulation time: {}",
+                bim.getSafetyZone().getNumOfPeople(), nop, timeModel);
     }
-
 }
