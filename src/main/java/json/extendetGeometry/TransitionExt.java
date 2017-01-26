@@ -114,4 +114,9 @@ public class TransitionExt extends Transition {
     public void setNumberExit(int numberExit) {
         this.numberExit = numberExit;
     }
+
+    @Override public String toString() {
+        return "TransitionExt{" + "numOfPeoplePassing=" + numOfPeoplePassing + ", nTay=" + nTay + ", numberExit="
+                + numberExit + "} " + super.toString();
+    }
 }
