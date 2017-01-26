@@ -224,37 +224,36 @@ class Traffic {
                                 for (TransitionExt transit : receivingArea.getTransitionList()) {
                                     // Портал не подлежит обработке
                                     if (receivingArea.getNTay() <= transit.getNTay() || transit.hasNullZone()) continue;
+
                                     String idZone1 = transit.getZoneAId();// Ссылки от портала на зону A
                                     ZoneExt radiatingArea = zones.get((receivingArea.getId().equals(idZone1)) ?
                                             transit.getZoneBId() :
                                             idZone1);
-                                    if (!radiatingArea.isEmpty()) {
-                                        double numOfPeopleInZone = radiatingArea.getNumOfPeople();
-                                        double sZone = radiatingArea.getArea();
-                                        double vZone = vElem(radiatingArea, receivingArea, ii);
-                                        double dZone = radiatingArea.getDensityOfPeople();
-                                        double lTransition = transit.getWidth();
-                                        double vTransition = vElem(lTransition, dZone);
-                                        double vAtExit = receivingArea.getPermeability() * Math.min(vZone, vTransition);
-                                        double d1 = lTransition * vAtExit * getTay() / sZone;
-                                        double d2 = (d1 >= 1) ? 1 : d1;
-                                        double dPeople = d2 * numOfPeopleInZone; // Изменение кол.людей
-                                        double delta = numOfPeopleInZone - dPeople; // Отдающая
-                                        // Кол. людей, которые могут быть высосаны
-                                        double ddPeople = (delta > 0) ? dPeople : numOfPeopleInZone;
-                                        double capacityZone =
-                                                D_MAX * receivingArea.getArea() - receivingArea.getNumOfPeople();
-                                        double changePeople = (capacityZone > ddPeople) ? ddPeople : capacityZone;
+                                    double numOfPeopleInZone = radiatingArea.getNumOfPeople();
+                                    double sZone = radiatingArea.getArea();
+                                    double vZone = vElem(radiatingArea, receivingArea, ii);
+                                    double dZone = radiatingArea.getDensityOfPeople();
+                                    double lTransition = transit.getWidth();
+                                    double vTransition = vElem(lTransition, dZone);
+                                    double vAtExit = receivingArea.getPermeability() * Math.min(vZone, vTransition);
+                                    double d1 = lTransition * vAtExit * getTay() / sZone;
+                                    double d2 = (d1 >= 1) ? 1 : d1;
+                                    double dPeople = d2 * numOfPeopleInZone; // Изменение кол.людей
+                                    double delta = numOfPeopleInZone - dPeople; // Отдающая
+                                    // Кол. людей, которые могут быть высосаны
+                                    double ddPeople = (delta > 0) ? dPeople : numOfPeopleInZone;
+                                    double capacityZone =
+                                            D_MAX * receivingArea.getArea() - receivingArea.getNumOfPeople();
+                                    double changePeople = (capacityZone > ddPeople) ? ddPeople : capacityZone;
 
-                                        receivingArea.addPeople(changePeople);// Увелич. людей в принимающей
-                                        radiatingArea.removePeople(changePeople);// Уменьшение людей
-                                        transit.addPassingPeople(changePeople);  // Увел. людей через дверь
-                                        // Потенциал времени в первом помещении
-                                        double timeout = (vAtExit > 0) ?
-                                                receivingArea.getTimeToReachExit() + Math.sqrt(sZone) / vAtExit :
-                                                receivingArea.getTimeToReachExit();
-                                        radiatingArea.setTimeToReachExit(timeout);
-                                    }
+                                    receivingArea.addPeople(changePeople);// Увелич. людей в принимающей
+                                    radiatingArea.removePeople(changePeople);// Уменьшение людей
+                                    transit.addPassingPeople(changePeople);  // Увел. людей через дверь
+                                    // Потенциал времени в первом помещении
+                                    double timeout = (vAtExit > 0) ?
+                                            receivingArea.getTimeToReachExit() + Math.sqrt(sZone) / vAtExit :
+                                            receivingArea.getTimeToReachExit();
+                                    radiatingArea.setTimeToReachExit(timeout);
                                     transit.nTayIncrease(); // Признак  обработки двери
                                     transit.setNumberExit(ii);
                                     radiatingArea.setNTay(transit.getNTay()); // Признак обраб. зоны
