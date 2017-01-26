@@ -110,11 +110,11 @@ public abstract class Zone<L extends Light, S extends Sensor, P extends Speaker>
     }
 
     @Override public String toString() {
-        return "Zone: {" + "id='" + id + '\'' + ", ceilingHeight="
+        return "id='" + id + '\'' + ", ceilingHeight="
                 + ceilingHeight + ", fireType=" + fireType + ", numOfPeople="
                 + numOfPeople + ", note='" + note + '\'' + ", type='" + type
                 + '\'' + ", lights=" + lights + ", sensors=" + sensors + ", "
-                + "speakers=" + speakers + '}';
+                + "speakers=" + speakers;
     }
 
     /**
