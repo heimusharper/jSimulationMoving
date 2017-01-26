@@ -39,6 +39,8 @@ import tools.ChangePeopleEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.lang.Double.NaN;
+import static java.lang.Double.isNaN;
 import static json.extendetGeometry.SensorExt.V_TEMPERATURE;
 import static json.extendetGeometry.SensorExt.V_VISIBLE;
 
@@ -53,8 +55,8 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     /**
      * Минимальное и максимальное значение по оси Z
      */
-    private double zMin = Double.MAX_VALUE;
-    private double zMax = -Double.MIN_VALUE;
+    private double zMin = NaN;
+    private double zMax = NaN;
     /**
      * Проницаемость зоны. (0 - зона не проницаема для людей, 1- полностью проницаема)
      */
@@ -92,7 +94,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      */
     public double getMinZ() {
         // Если однажды посчитали, в дальнейшем возвращаем
-        if (zMin != Double.MAX_VALUE) return zMin;
+        if (!isNaN(zMin)) return zMin;
 
         for (int i = 0; i < getXyz()[0].length; i++) {
             final double z = getXyz(0, i, 2);
@@ -105,7 +107,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      * @return Максимальное значение по оси Z в пределах зоны
      */
     public double getMaxZ() {
-        if (zMax != -Double.MIN_VALUE) return zMax;
+        if (!isNaN(zMax)) return zMax;
 
         for (int i = 0; i < getXyz()[0].length; i++) {
             final double z = getXyz(0, i, 2);
@@ -289,14 +291,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     }
 
     /**
-     * @param i номер двери (индекс списка)
-     * @return Дверь по индексу ({@link TransitionExt}
-     */
-    public TransitionExt getTransition(int i) {
-        return getTransitionList().get(i);
-    }
-
-    /**
      * @param tUuid строковый идентификатор двери
      * @return Дверь по uuid ({@link TransitionExt}
      */
@@ -324,10 +318,9 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
         return getNumOfPeople() / getArea();
     }
 
-    /**
-     * @return true если в зоне нет людей
-     */
-    public boolean isEmpty() {
-        return getNumOfPeople() == 0;
+    @Override public String toString() {
+        return "ZoneExt {" + super.toString() + "zMin=" + zMin + ", zMax=" + zMax + ", permeability=" + permeability
+                + ", direction=" + direction + ", numberExit=" + numberExit + ", nTay=" + nTay + ", timeToReachExit="
+                + timeToReachExit + ", transitionList=" + transitionList + "}";
     }
 }
