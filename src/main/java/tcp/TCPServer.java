@@ -169,7 +169,7 @@ public class TCPServer extends Thread {
                 if (r < sizeBuffer) continue;
                 // Интерпретируем байты
                 final String data = new String(resultsBuffer, 0, r);
-                if (data.contains("geom")) {
+                if (data.contains("start")) {
                     Moving moving = new Moving();
                     moving.start();
                 }
