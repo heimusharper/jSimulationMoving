@@ -48,7 +48,7 @@ import static json.extendetGeometry.SensorExt.V_VISIBLE;
  * Класс, расширяющий базовый {@link Zone}.
  * Предназначен для полей, которые не входят в *.json файл с геометрией
  * <p>
- * Created by boris on 17.12.16.     Modification of 27.12.2016
+ * Created by boris on 17.12.16.
  */
 public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Eventable {
 
@@ -203,7 +203,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      *
      * @param permeabilityValue - проницаемость зоны ( от 0 до 1)
      */
-    public void setPermeability(double permeabilityValue) {
+    private void setPermeability(double permeabilityValue) {
         this.permeability = permeabilityValue;
     }
 
@@ -212,6 +212,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      */
     private void updatePermeability() {
         ArrayList<SensorExt> sensors = getSensors();
+        if (sensors.isEmpty()) return;
         double[] values = new double[sensors.size()];
 
         for (int i = 0; i < values.length; i++) {
