@@ -60,6 +60,7 @@ public class Moving extends Thread {
 
         // Количество людей в здании, до эвакуации
         double nop = bim.getNumOfPeople();
+        log.info("Number of people in Building: {}", nop);
         // Максимальное кол-во проходов по циклу (Для избежания зацикливания)
         // int acceptRepeat = 500;
         double timeModel = 0.0; // Текущее время моделирования эвакуации, c
@@ -71,7 +72,7 @@ public class Moving extends Thread {
             double fdsTime = d.getKey();
             if (fdsTime == 0.0) continue;
 
-            for (ZoneExt ze : bim.getZones().values()) // по зонам
+            /*for (ZoneExt ze : bim.getZones().values()) // по зонам
                 for (SensorExt se : ze.getSensors()) // по сенсорам в зоне
                     for (DevcHelper dh : d.getValue()) // по значениям
                         if (se.getId().equalsIgnoreCase(dh.getId())) { // нашли сенсор для которого есть данные
@@ -83,7 +84,7 @@ public class Moving extends Thread {
                                 se.setTemperature(dh.getValue());
                                 break;
                             }
-                        }
+                        }*/
 
             time = fdsTime - previousFdsTime;
             previousFdsTime = fdsTime;
