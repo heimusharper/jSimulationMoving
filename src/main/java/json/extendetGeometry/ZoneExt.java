@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (C) 2016 Chirkov Boris <b.v.chirkov@udsu.ru>
+/*
+ * Copyright (C) 2017 Chirkov Boris <b.v.chirkov@udsu.ru>
  *
  * Project website:       http://eesystem.ru
  * Organization website:  http://rintd.ru
@@ -23,7 +23,7 @@
  *
  * This code is in BETA; some features are incomplete and the code
  * could be written better.
- ******************************************************************************/
+ */
 
 package json.extendetGeometry;
 
@@ -176,8 +176,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     /**
      * Позволяет задать направление движения по лестнице
      *
-     * @param direction -3 - вниз  {@link Direction#DOWN}, +3 - вверх {@link
-     *                  Direction#UP}
+     * @param direction -3 - вниз  {@link Direction#DOWN}, +3 - вверх {@link Direction#UP}
      */
     public void setDirection(int direction) {
         this.direction = direction;
@@ -187,7 +186,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      * @return Значение проницаемости зоны
      */
     public double getPermeability() {
-        updatePermeability();
+        if (!getSensors().isEmpty()) updatePermeability();
         return this.permeability;
     }
 
@@ -208,11 +207,10 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     }
 
     /**
-     * Позволяет обновить значение проходимости помещения.
+     * Позволяет обновить значение проходимости помещения
      */
     private void updatePermeability() {
         ArrayList<SensorExt> sensors = getSensors();
-        if (sensors.isEmpty()) return;
         double[] values = new double[sensors.size()];
 
         for (int i = 0; i < values.length; i++) {

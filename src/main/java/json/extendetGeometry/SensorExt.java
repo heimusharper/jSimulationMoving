@@ -64,11 +64,11 @@ public class SensorExt extends Sensor {
     /**
      * Критическое значение параметра - по температуре (70 градусов по Цельсию)
      */
-    public static final double V_TEMPERATURE = 70.0;
+    static final double V_TEMPERATURE = 70.0;
     /**
      * Критическое значение параметра - по видимости (20 метров)
      */
-    public static final double V_VISIBLE     = 20.0;
+    static final double V_VISIBLE     = 20.0;
 
     /**
      * Состояние сенсорного узла - Активен или Не активен
