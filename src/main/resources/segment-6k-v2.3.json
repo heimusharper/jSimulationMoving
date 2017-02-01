@@ -52,24 +52,6 @@
                     "note": "",
                     "numOfPeople": 20,
                     "sensors": [
-                        {
-                            "deviceId": 51,
-                            "id": "{325dd91c-a5f9-42de-84c8-fb4d6d551828}zone52",
-                            "note": "",
-                            "type": "",
-                            "x": 13.1,
-                            "y": 12.06666667,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 52,
-                            "id": "{325dd91c-a5f9-42de-84c8-fb4d6d551828}zone53",
-                            "note": "",
-                            "type": "",
-                            "x": 17.36666667,
-                            "y": 12.066666666666666,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -189,7 +171,7 @@
                             "deviceId": 2,
                             "id": "TD.028",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 13.2,
                             "y": 7.43,
                             "z": 2.7
@@ -198,7 +180,7 @@
                             "deviceId": 49,
                             "id": "TD.023",
                             "note": "",
-                            "type": "",
+                            "type": "TEMPERATURE",
                             "x": 18.38666667,
                             "y": 7.46,
                             "z": 2.7
@@ -285,24 +267,6 @@
                     "note": "",
                     "numOfPeople": 20,
                     "sensors": [
-                        {
-                            "deviceId": 59,
-                            "id": "{4d88fd91-c9cf-4137-9a50-85494a9f4ac2}zone60",
-                            "note": "",
-                            "type": "",
-                            "x": 21.466666666666665,
-                            "y": 12.066666666666666,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 60,
-                            "id": "{4d88fd91-c9cf-4137-9a50-85494a9f4ac2}zone61",
-                            "note": "",
-                            "type": "",
-                            "x": 26.5,
-                            "y": 12,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -411,7 +375,7 @@
                             "deviceId": 4,
                             "id": "TD.021",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 32.435,
                             "y": 7.475,
                             "z": 2.7
@@ -420,7 +384,7 @@
                             "deviceId": 50,
                             "id": "TD.022",
                             "note": "",
-                            "type": "",
+                            "type": "TEMPERATURE",
                             "x": 27.26666667,
                             "y": 7.48666667,
                             "z": 2.7
@@ -507,24 +471,6 @@
                     "note": "",
                     "numOfPeople": 0,
                     "sensors": [
-                        {
-                            "deviceId": 61,
-                            "id": "{c09a942d-04c1-4c47-a388-830b5f0f540a}zone62",
-                            "note": "",
-                            "type": "",
-                            "x": 30.066666666666666,
-                            "y": 10.266666666666667,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 62,
-                            "id": "{c09a942d-04c1-4c47-a388-830b5f0f540a}zone63",
-                            "note": "",
-                            "type": "",
-                            "x": 30.033333333333335,
-                            "y": 13.033333333333333,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -607,24 +553,6 @@
                     "note": "",
                     "numOfPeople": 0,
                     "sensors": [
-                        {
-                            "deviceId": 63,
-                            "id": "{ca35255e-afb0-44b6-a6de-cc6b453599c8}zone64",
-                            "note": "",
-                            "type": "",
-                            "x": 32.9,
-                            "y": 10.033333333333333,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 64,
-                            "id": "{ca35255e-afb0-44b6-a6de-cc6b453599c8}zone65",
-                            "note": "",
-                            "type": "",
-                            "x": 33,
-                            "y": 12.66666667,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -707,24 +635,6 @@
                     "note": "",
                     "numOfPeople": 0,
                     "sensors": [
-                        {
-                            "deviceId": 65,
-                            "id": "{58fb58e1-9a3f-4196-bd0f-7ea34096c715}zone66",
-                            "note": "",
-                            "type": "",
-                            "x": 35.9,
-                            "y": 10,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 66,
-                            "id": "{58fb58e1-9a3f-4196-bd0f-7ea34096c715}zone67",
-                            "note": "",
-                            "type": "",
-                            "x": 36,
-                            "y": 13.1,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -855,7 +765,7 @@
                             "deviceId": 6,
                             "id": "TD.020",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 38.505,
                             "y": 10.415,
                             "z": 2.7
@@ -951,7 +861,7 @@
                             "deviceId": 7,
                             "id": "TD.026",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 38.535,
                             "y": 16.255,
                             "z": 2.7
@@ -1043,15 +953,6 @@
                     "note": "",
                     "numOfPeople": 5,
                     "sensors": [
-                        {
-                            "deviceId": 67,
-                            "id": "{6a1e1003-cab0-4d95-bccc-be200e1333b1}zone68",
-                            "note": "",
-                            "type": "",
-                            "x": 41.233333333333334,
-                            "y": 16.633333333333333,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -1134,15 +1035,6 @@
                     "note": "",
                     "numOfPeople": 15,
                     "sensors": [
-                        {
-                            "deviceId": 68,
-                            "id": "{96135549-9bfa-401e-a1dc-d40c02e2c3c8}zone69",
-                            "note": "",
-                            "type": "",
-                            "x": 42.53333333333333,
-                            "y": 11.4,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -1333,7 +1225,7 @@
                             "deviceId": 5,
                             "id": "TD.019",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 37.325,
                             "y": 6.205,
                             "z": 2.7
@@ -1420,15 +1312,6 @@
                     "note": "",
                     "numOfPeople": 15,
                     "sensors": [
-                        {
-                            "deviceId": 69,
-                            "id": "{d0913dd9-44a5-4782-9d94-373425def6f2}zone70",
-                            "note": "",
-                            "type": "",
-                            "x": 42.56666666666667,
-                            "y": 4.633333333333334,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -1593,24 +1476,6 @@
                     "note": "",
                     "numOfPeople": 15,
                     "sensors": [
-                        {
-                            "deviceId": 57,
-                            "id": "{0b1c7ae9-e049-4b5f-b2c9-260bc15be617}zone58",
-                            "note": "",
-                            "type": "",
-                            "x": 29.9,
-                            "y": 2.8,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 58,
-                            "id": "{0b1c7ae9-e049-4b5f-b2c9-260bc15be617}zone59",
-                            "note": "",
-                            "type": "",
-                            "x": 32.46666666666667,
-                            "y": 2.8,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -1693,24 +1558,6 @@
                     "note": "",
                     "numOfPeople": 10,
                     "sensors": [
-                        {
-                            "deviceId": 55,
-                            "id": "{86608c1a-1cc6-4164-b794-8b56c73c35cb}zone56",
-                            "note": "",
-                            "type": "",
-                            "x": 24.3,
-                            "y": 2.7666666666666666,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 56,
-                            "id": "{86608c1a-1cc6-4164-b794-8b56c73c35cb}zone57",
-                            "note": "",
-                            "type": "",
-                            "x": 26.866666666666667,
-                            "y": 2.7,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -1793,24 +1640,6 @@
                     "note": "",
                     "numOfPeople": 25,
                     "sensors": [
-                        {
-                            "deviceId": 53,
-                            "id": "{a738b470-c5ae-4d45-8ef0-1440bd24e9a5}zone54",
-                            "note": "",
-                            "type": "",
-                            "x": 13.5,
-                            "y": 2.8666666666666667,
-                            "z": 2.7
-                        },
-                        {
-                            "deviceId": 54,
-                            "id": "{a738b470-c5ae-4d45-8ef0-1440bd24e9a5}zone55",
-                            "note": "",
-                            "type": "",
-                            "x": 19.1,
-                            "y": 2.8,
-                            "z": 2.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -1969,7 +1798,7 @@
                             "deviceId": 48,
                             "id": "TD.025",
                             "note": "",
-                            "type": "",
+                            "type": "TEMPERATURE",
                             "x": 7.73333333,
                             "y": 7.36666667,
                             "z": 2.7
@@ -2622,7 +2451,7 @@
                             "deviceId": 0,
                             "id": "TD.029",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 3.03,
                             "y": 2.675,
                             "z": 2.7
@@ -2631,7 +2460,7 @@
                             "deviceId": 47,
                             "id": "TD.030",
                             "note": "",
-                            "type": "",
+                            "type": "TEMPERATURE",
                             "x": 7.76666667,
                             "y": 2.77333333,
                             "z": 2.7
@@ -2774,7 +2603,7 @@
                             "deviceId": 3,
                             "id": "TD.027",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 23.94,
                             "y": 7.44,
                             "z": 2.7
@@ -2863,20 +2692,20 @@
                     "sensors": [
                         {
                             "deviceId": 18,
-                            "id": "{d3a5fcb4-0751-4209-b8eb-3964aca29b50}zone19",
+                            "id": "TD.213",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 13.975,
                             "y": 52.2,
                             "z": 5.7
                         },
                         {
                             "deviceId": 19,
-                            "id": "{d3a5fcb4-0751-4209-b8eb-3964aca29b50}zone20",
+                            "id": "TD.214",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 19.6,
-                            "y": 52.25,
+                            "y": 52.05,
                             "z": 5.7
                         }
                     ],
@@ -2962,12 +2791,12 @@
                     "numOfPeople": 0,
                     "sensors": [
                         {
-                            "deviceId": 12,
-                            "id": "{90f0725b-0a60-48ab-b5c5-fe4b58bf6b66}zone13",
-                            "note": "",
-                            "type": "GENERIC",
+                            "deviceId": 81,
+                            "id": "TD.207",
+                            "note": "TEMPERATURE",
+                            "type": "TEMPERATURE",
                             "x": 23.45,
-                            "y": 47.825,
+                            "y": 47.875,
                             "z": 5.7
                         }
                     ],
@@ -3052,6 +2881,24 @@
                     "note": "",
                     "numOfPeople": 1,
                     "sensors": [
+                        {
+                            "deviceId": 53,
+                            "id": "TD.216",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 23.9,
+                            "y": 50.4,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 75,
+                            "id": "TD.215",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 23.85,
+                            "y": 53.63,
+                            "z": 5.7
+                        }
                     ],
                     "speakers": [
                     ],
@@ -3134,6 +2981,42 @@
                     "note": "",
                     "numOfPeople": 25,
                     "sensors": [
+                        {
+                            "deviceId": 55,
+                            "id": "{69837f3d-e7f5-4586-a666-67322e3e7d3d}zone56",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 27.1,
+                            "y": 52.675,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 56,
+                            "id": "{69837f3d-e7f5-4586-a666-67322e3e7d3d}zone57",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 32.075,
+                            "y": 52.725,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 70,
+                            "id": "TD.217",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 27.15,
+                            "y": 52.605,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 71,
+                            "id": "TD.218",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 32.05,
+                            "y": 52.68,
+                            "z": 5.7
+                        }
                     ],
                     "speakers": [
                     ],
@@ -3216,6 +3099,24 @@
                     "note": "",
                     "numOfPeople": 0,
                     "sensors": [
+                        {
+                            "deviceId": 58,
+                            "id": "TD.230",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 35.95,
+                            "y": 53.975,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 72,
+                            "id": "{8f5beb85-900d-4ff0-94d3-ea7b2452c31e}zone73",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 36.025,
+                            "y": 51.025,
+                            "z": 5.7
+                        }
                     ],
                     "speakers": [
                     ],
@@ -3332,11 +3233,11 @@
                     "sensors": [
                         {
                             "deviceId": 10,
-                            "id": "{6d7e4180-b7a7-4a3d-bc32-e81adc71ee17}zone11",
+                            "id": "TD.210",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 38.575,
-                            "y": 47.875,
+                            "y": 48.095,
                             "z": 5.7
                         }
                     ],
@@ -3466,11 +3367,20 @@
                     "sensors": [
                         {
                             "deviceId": 9,
-                            "id": "{1d5ad4be-23d4-4391-8db5-9aac1e79b638}zone10",
+                            "id": "TD.212",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 38.725,
-                            "y": 54.925,
+                            "y": 57.445,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 62,
+                            "id": "TD.211",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 38.675,
+                            "y": 52.775,
                             "z": 5.7
                         }
                     ],
@@ -3560,15 +3470,6 @@
                     "note": "",
                     "numOfPeople": 0,
                     "sensors": [
-                        {
-                            "deviceId": 8,
-                            "id": "{c05e046c-10ee-4f4c-8eae-ed4cf7719a65}zone9",
-                            "note": "",
-                            "type": "GENERIC",
-                            "x": 36.75,
-                            "y": 56.9,
-                            "z": 5.7
-                        }
                     ],
                     "speakers": [
                     ],
@@ -3656,6 +3557,33 @@
                     "note": "",
                     "numOfPeople": 30,
                     "sensors": [
+                        {
+                            "deviceId": 63,
+                            "id": "TD.227",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 43.27,
+                            "y": 43.815,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 64,
+                            "id": "TD.228",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 43.175,
+                            "y": 49.68,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 65,
+                            "id": "TD.229",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 43.275,
+                            "y": 56.805,
+                            "z": 5.7
+                        }
                     ],
                     "speakers": [
                     ],
@@ -3738,6 +3666,24 @@
                     "note": "",
                     "numOfPeople": 7,
                     "sensors": [
+                        {
+                            "deviceId": 66,
+                            "id": "TD.225",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 35.775,
+                            "y": 43.425,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 67,
+                            "id": "TD.226",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 38.6,
+                            "y": 43.375,
+                            "z": 5.7
+                        }
                     ],
                     "speakers": [
                     ],
@@ -3844,11 +3790,20 @@
                     "sensors": [
                         {
                             "deviceId": 11,
-                            "id": "{3eaa7cac-8f2f-40e1-bcde-3bac1a579aa4}zone12",
+                            "id": "TD.209",
                             "note": "",
-                            "type": "GENERIC",
-                            "x": 31.525,
+                            "type": "TEMPERATURE",
+                            "x": 34.045,
                             "y": 47.825,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 59,
+                            "id": "TD.208",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 29.255,
+                            "y": 47.78,
                             "z": 5.7
                         }
                     ],
@@ -3933,6 +3888,24 @@
                     "note": "",
                     "numOfPeople": 25,
                     "sensors": [
+                        {
+                            "deviceId": 60,
+                            "id": "TD.223",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 24.825,
+                            "y": 43.555,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 69,
+                            "id": "TD.224",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 31.95,
+                            "y": 43.255,
+                            "z": 5.7
+                        }
                     ],
                     "speakers": [
                     ],
@@ -4017,20 +3990,20 @@
                     "sensors": [
                         {
                             "deviceId": 20,
-                            "id": "{a7acc0bf-8b68-4232-9a0d-9abf180f3a70}zone21",
+                            "id": "TD.221",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 21.125,
-                            "y": 45.175,
+                            "y": 45.155,
                             "z": 5.7
                         },
                         {
                             "deviceId": 21,
-                            "id": "{a7acc0bf-8b68-4232-9a0d-9abf180f3a70}zone22",
+                            "id": "TD.222",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 21.075,
-                            "y": 41.95,
+                            "y": 41.93,
                             "z": 5.7
                         }
                     ],
@@ -4117,20 +4090,20 @@
                     "sensors": [
                         {
                             "deviceId": 16,
-                            "id": "{79b75bd8-d67b-488f-ba5d-13149ffb3a7e}zone17",
+                            "id": "TD.219",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 13.2,
-                            "y": 43.275,
+                            "y": 43.255,
                             "z": 5.7
                         },
                         {
                             "deviceId": 17,
-                            "id": "{79b75bd8-d67b-488f-ba5d-13149ffb3a7e}zone18",
+                            "id": "TD.220",
                             "note": "",
-                            "type": "GENERIC",
+                            "type": "TEMPERATURE",
                             "x": 17.4,
-                            "y": 43.2,
+                            "y": 43.32,
                             "z": 5.7
                         }
                     ],
@@ -4250,11 +4223,20 @@
                     "sensors": [
                         {
                             "deviceId": 13,
-                            "id": "{3dcd7c58-7e24-4822-a70a-041c962e99bc}zone14",
+                            "id": "TD.205",
                             "note": "",
-                            "type": "GENERIC",
-                            "x": 15.15,
+                            "type": "TEMPERATURE",
+                            "x": 12.45,
                             "y": 47.775,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 52,
+                            "id": "TD.206",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 18.475,
+                            "y": 47.875,
                             "z": 5.7
                         }
                     ],
@@ -4394,11 +4376,20 @@
                     "sensors": [
                         {
                             "deviceId": 14,
-                            "id": "{bd2aa928-98cf-4ad8-9855-00b39bb57f22}zone15",
+                            "id": "TD.203",
                             "note": "",
-                            "type": "GENERIC",
-                            "x": 5.375,
-                            "y": 47.775,
+                            "type": "TEMPERATURE",
+                            "x": 2.855,
+                            "y": 48.195,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 51,
+                            "id": "TD.204",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 8.05,
+                            "y": 48.125,
                             "z": 5.7
                         }
                     ],
@@ -4955,11 +4946,20 @@
                     "sensors": [
                         {
                             "deviceId": 15,
-                            "id": "{517d5a4f-51d9-4ff5-bbf0-0add3df77e9f}zone16",
+                            "id": "TD.201",
                             "note": "",
-                            "type": "GENERIC",
-                            "x": 5.35,
+                            "type": "TEMPERATURE",
+                            "x": 2.83,
                             "y": 43.15,
+                            "z": 5.7
+                        },
+                        {
+                            "deviceId": 50,
+                            "id": "TD.202",
+                            "note": "",
+                            "type": "TEMPERATURE",
+                            "x": 7.975,
+                            "y": 43.075,
                             "z": 5.7
                         }
                     ],
