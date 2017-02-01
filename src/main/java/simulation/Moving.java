@@ -51,9 +51,9 @@ public class Moving extends Thread {
         // Загрузка структуры здания BIM
         ClassLoader thisClassLoader = Moving.class.getClassLoader();
         BIMLoader<BIMExt> bimLoader = new BIMLoader<>(thisClassLoader.
-                getResourceAsStream("segment-6k-v2.2.json"), BIMExt.class);
+                getResourceAsStream("segment-6k-v2.3.json"), BIMExt.class);
 
-        LinkedHashMap<Double, ArrayList<DevcHelper>> fdsData = ReadFDSOutput.readDevc("UdSU_devc.csv");
+        LinkedHashMap<Double, ArrayList<DevcHelper>> fdsData = ReadFDSOutput.readDevc("UdSU_c6s1v1_devc.csv");
 
         BIMExt bim = bimLoader.getBim();
         Traffic traffic = new Traffic(bim);
@@ -72,10 +72,11 @@ public class Moving extends Thread {
             double fdsTime = d.getKey();
             if (fdsTime == 0.0) continue;
 
-            /*for (ZoneExt ze : bim.getZones().values()) // по зонам
+            for (ZoneExt ze : bim.getZones().values()) // по зонам
                 for (SensorExt se : ze.getSensors()) // по сенсорам в зоне
                     for (DevcHelper dh : d.getValue()) // по значениям
-                        if (se.getId().equalsIgnoreCase(dh.getId())) { // нашли сенсор для которого есть данные
+                        if (se.getId().substring(3).equalsIgnoreCase(dh.getId())) { // нашли сенсор для которого есть
+                            // данные
                             if (se.isSmoke() && dh.getType() == T_SMOKE) {
                                 se.setVisible(dh.getValue());
                                 break;
@@ -84,7 +85,7 @@ public class Moving extends Thread {
                                 se.setTemperature(dh.getValue());
                                 break;
                             }
-                        }*/
+                        }
 
             time = fdsTime - previousFdsTime;
             previousFdsTime = fdsTime;
