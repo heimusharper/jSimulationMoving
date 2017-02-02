@@ -30,29 +30,42 @@ package tools;
 /**
  * Created by boris on 15.01.17.
  */
-public class ChangePeopleEvent {
+public class ZoneInfo {
+    private final int PEOPLE       = 0;
+    private final int PERMEABILITY = 1;
 
-    private double numOfPeople;
     private String zid;
+    private int    type;
+    private double numOfPeople;
+    private double permeability;
 
-    public ChangePeopleEvent(String zid, double numOfPeople) {
+    public ZoneInfo changePeople(String zid, double numOfPeople) {
         setNumOfPeople(numOfPeople);
         setZid(zid);
+        setType(PEOPLE);
+        return this;
     }
 
-    public double getNumOfPeople() {
-        return numOfPeople;
+    public ZoneInfo changePermeability(String zid, double permeability) {
+        setPermeability(permeability);
+        setZid(zid);
+        setType(PERMEABILITY);
+        return this;
     }
 
     private void setNumOfPeople(double numOfPeople) {
         this.numOfPeople = numOfPeople;
     }
 
-    public String getZid() {
-        return zid;
-    }
-
     private void setZid(String zid) {
         this.zid = zid;
+    }
+
+    private void setPermeability(double permeability) {
+        this.permeability = permeability;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

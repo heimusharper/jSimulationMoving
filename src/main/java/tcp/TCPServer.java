@@ -34,7 +34,7 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulation.Moving;
-import tools.ChangePeopleEvent;
+import tools.ZoneInfo;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -138,7 +138,7 @@ public class TCPServer extends Thread {
          *
          * @throws IOException смотри описание {@link IOException}
          */
-        @Subscribe private void sendData(ChangePeopleEvent handler) throws IOException {
+        @Subscribe private void sendData(ZoneInfo handler) throws IOException {
             if (getClientSocket().isClosed() || !getClientSocket().isConnected()) return;
 
             String json = new Gson().toJson(handler);
@@ -157,7 +157,7 @@ public class TCPServer extends Thread {
          *
          * @throws IOException смотри описание {@link IOException}
          */
-        private void readData() throws IOException {
+        private void readData() throws IOException, InterruptedException {
             if (bis.available() == 0) return; // Проверяем наличие байт на чтение
             if (bis.read(headerData) != headerData.length) return; // Считываем первые 4 байта
             int sizeBuffer = Ints.fromByteArray(headerData); // Получаем размер пакета
@@ -169,9 +169,12 @@ public class TCPServer extends Thread {
                 if (r < sizeBuffer) continue;
                 // Интерпретируем байты
                 final String data = new String(resultsBuffer, 0, r);
+                Moving moving = new Moving();
                 if (data.contains("start")) {
-                    Moving moving = new Moving();
                     moving.start();
+                }
+                if (data.contains("stop") && moving.isAlive()) {
+                    moving.join();
                 }
                 break;
             } while (true);
@@ -185,6 +188,8 @@ public class TCPServer extends Thread {
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }

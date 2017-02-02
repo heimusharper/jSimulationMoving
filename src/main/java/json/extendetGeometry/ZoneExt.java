@@ -34,7 +34,7 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import json.geometry.Zone;
-import tools.ChangePeopleEvent;
+import tools.ZoneInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,6 +204,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      */
     private void setPermeability(double permeabilityValue) {
         this.permeability = permeabilityValue;
+        //post(new ZoneInfo().changePermeability(getId(), this.permeability));
     }
 
     /**
@@ -246,7 +247,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     /* При каждом вызове инициируется событие об изменении людей, которое информируетм метод TCPServer#sendData() */
     @Override public void setNumOfPeople(double numOfPeople) {
         super.setNumOfPeople(numOfPeople);
-        post(new ChangePeopleEvent(getId(), getNumOfPeople()));
+        post(new ZoneInfo().changePeople(getId(), getNumOfPeople()));
     }
 
     public void setNumberExit(int numberExit) {
