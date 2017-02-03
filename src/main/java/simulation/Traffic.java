@@ -235,7 +235,8 @@ class Traffic {
                                     double dZone = radiatingArea.getDensityOfPeople();
                                     double lTransition = transit.getWidth();
                                     double vTransition = vElem(lTransition, dZone);
-                                    double vAtExit = receivingArea.getPermeability() * Math.min(vZone, vTransition);
+//                                    double vAtExit = receivingArea.getPermeability() * Math.min(vZone, vTransition);
+                                    double vAtExit = Math.min(vZone, vTransition);
                                     double d1 = lTransition * vAtExit * getTay() / sZone;
                                     double d2 = (d1 >= 1) ? 1 : d1;
                                     double dPeople = d2 * numOfPeopleInZone; // Изменение кол.людей
