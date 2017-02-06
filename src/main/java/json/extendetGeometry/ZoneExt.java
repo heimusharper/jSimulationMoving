@@ -207,6 +207,10 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
         //post(new ZoneInfo().changePermeability(getId(), this.permeability));
     }
 
+    public boolean isBloked() {
+        return getPermeability() == 0.0;
+    }
+
     /**
      * Позволяет обновить значение проходимости помещения
      */
@@ -250,6 +254,15 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
         post(new ZoneInfo().changePeople(getId(), getNumOfPeople()));
     }
 
+    /**
+     * Позволяет равномерно распределить людей по помещению в зависимости от задаваемой плотности на 1 м^2
+     *
+     * @param density - плотность (м^2).
+     */
+    public void setAllocationPeople(double density) {
+        setNumOfPeople(getArea() * density);
+    }
+
     public void setNumberExit(int numberExit) {
         this.numberExit = numberExit;
     }
@@ -291,18 +304,6 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
     }
 
     /**
-     * @param tUuid строковый идентификатор двери
-     * @return Дверь по uuid ({@link TransitionExt}
-     */
-    public TransitionExt getTransition(String tUuid) {
-        for (TransitionExt t : getTransitionList()) {
-            if (t.getId().equals(tUuid)) return t;
-        }
-        throw new NullPointerException(
-                "The Transition is not find. Incorrect UUID or the Transition" + " does not exist");
-    }
-
-    /**
      * Позволяет добавить дверь в список
      *
      * @param t экземпляр класса {@link TransitionExt}
@@ -316,6 +317,20 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
      */
     public double getDensityOfPeople() {
         return getNumOfPeople() / getArea();
+    }
+
+    /**
+     * @return true, если зона является этажом и не является лестницей.
+     */
+    public boolean isFloor() {
+        return super.getType() == FLOOR;
+    }
+
+    /**
+     * @return true, если зона является лестницей
+     */
+    public boolean isStairs() {
+        return super.getType() == STAIRS;
     }
 
     @Override public String toString() {

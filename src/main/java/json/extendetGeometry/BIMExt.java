@@ -31,10 +31,15 @@ import json.geometry.BIM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Comparator.comparing;
 
 /**
  * Класс, расширяющий базовый {@link BIM}.
@@ -107,19 +112,34 @@ public class BIMExt extends BIM<RoomExt, TransitionExt> {
      * @return Количество людей в здании
      */
     public double getNumOfPeople() {
-        return numOfPeople == 0 ?
-                getZonesStream().mapToDouble(ZoneExt::getNumOfPeople).sum() :
-                numOfPeople;
+        return numOfPeople == 0 ? getZonesStream().mapToDouble(ZoneExt::getNumOfPeople).sum() : numOfPeople;
+    }
+
+    /**
+     * @return Количество людей по этажам
+     */
+    public LinkedHashMap<Double, Double> getNumOfPeopleOnLayers() {
+        LinkedHashMap<Double, Double> peopleMap = new LinkedHashMap<>();
+        for (ZoneExt z : getZonesStream().filter(ZoneExt::isFloor).collect(Collectors.toList())) {
+            double level = z.getXyz(0, 0, 2);
+            if (peopleMap.isEmpty()) peopleMap.put(level, z.getNumOfPeople());
+            else if (peopleMap.containsKey(level)) peopleMap.put(level, peopleMap.get(level) + z.getNumOfPeople());
+            else peopleMap.put(level, z.getNumOfPeople());
+        }
+
+        ArrayList<Entry<Double, Double>> entries = new ArrayList<>(peopleMap.entrySet());
+        entries.sort(comparing(Entry::getKey));
+        peopleMap.clear();
+        for (Entry<Double, Double> entry : entries) peopleMap.put(entry.getKey(), entry.getValue());
+
+        return peopleMap;
     }
 
     /**
      * @return Количество эвакуационных выходов
      */
     public int getNumOfExits() {
-        return numOfExits == 0 ?
-                (int) getTransitionStream().filter(TransitionExt::hasNullZone)
-                        .count() :
-                numOfExits;
+        return numOfExits == 0 ? (int) getTransitionStream().filter(TransitionExt::hasNullZone).count() : numOfExits;
     }
 
     /**
@@ -128,9 +148,7 @@ public class BIMExt extends BIM<RoomExt, TransitionExt> {
     public List<TransitionExt> getExitsTransition() {
         if (exitsTransition != null) return exitsTransition;
 
-        exitsTransition = getTransitionStream()
-                .filter(TransitionExt::hasNullZone)
-                .collect(Collectors.toList());
+        exitsTransition = getTransitionStream().filter(TransitionExt::hasNullZone).collect(Collectors.toList());
         return exitsTransition;
     }
 
@@ -180,8 +198,7 @@ public class BIMExt extends BIM<RoomExt, TransitionExt> {
      * Позволяет открыть поток проемов
      */
     private void setTransitionStream() {
-        transitionStream = getTransitions().stream()
-                .filter(TransitionExt::hasNullZone);
+        transitionStream = getTransitions().stream().filter(TransitionExt::hasNullZone);
     }
 
     /**
