@@ -31,6 +31,7 @@ import json.extendetGeometry.SensorExt;
 import json.extendetGeometry.ZoneExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.Analysis;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -45,6 +46,10 @@ import static json.extendetGeometry.SensorExt.T_TEMPERATURE;
 public class Moving extends Thread {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
 
+    private String  fileName = "UdSU_c6sD_devc.csv";
+    private double  density  = 0.2;
+    private boolean isFire   = true;
+
     @Override public void run() {
         log.info("Running thread with simulation moving");
 
@@ -53,9 +58,26 @@ public class Moving extends Thread {
         BIMLoader<BIMExt> bimLoader = new BIMLoader<>(thisClassLoader.
                 getResourceAsStream("segment-6k-v2.3.json"), BIMExt.class);
 
-        LinkedHashMap<Double, ArrayList<DevcHelper>> fdsData = ReadFDSOutput.readDevc("UdSU_c6s1v1_devc.csv");
+        LinkedHashMap<Double, ArrayList<DevcHelper>> fdsData = ReadFDSOutput.readDevc("scenarios/" + fileName);
 
         BIMExt bim = bimLoader.getBim();
+
+        // START ------------- ANALYSIS VARS -------------------
+        {
+            // Распределение людей по помещениям. Распределяются только в те, где уже были люди
+            bim.getZones().values().forEach(z -> {
+                if (z.getNumOfPeople() > 0) z.setAllocationPeople(density);
+            });
+            // Распечатка количества людей по этажам
+            bim.getNumOfPeopleOnLayers().forEach((l, p) -> log.debug("On level {} is {} people ", l, p));
+        }
+
+        Analysis analysis = new Analysis(bim, fileName, isFire, density);
+        ArrayList<String> blockedZones = new ArrayList<>();
+        ArrayList<String> dynamicsOfGeneralEvac = new ArrayList<>(); // Динамика вышедших на улицу
+        dynamicsOfGeneralEvac.add(String.valueOf(0.0) + ";" + String.valueOf(bim.getSafetyZone().getNumOfPeople()));
+        // END ------------- ANALYSIS VARS -------------------
+
         Traffic traffic = new Traffic(bim);
 
         // Количество людей в здании, до эвакуации
@@ -72,11 +94,10 @@ public class Moving extends Thread {
             double fdsTime = d.getKey();
             if (fdsTime == 0.0) continue;
 
-            for (ZoneExt ze : bim.getZones().values()) // по зонам
+            if (isFire) for (ZoneExt ze : bim.getZones().values()) {// по зонам
                 for (SensorExt se : ze.getSensors()) // по сенсорам в зоне
                     for (DevcHelper dh : d.getValue()) // по значениям
-                        if (se.getId().substring(3).equalsIgnoreCase(dh.getId())) { // нашли сенсор для которого есть
-                            // данные
+                        if (se.getId().substring(3).equalsIgnoreCase(dh.getId())) { // сенсор для которого есть данные
                             if (se.isSmoke() && dh.getType() == T_SMOKE) {
                                 se.setVisible(dh.getValue());
                                 break;
@@ -86,6 +107,11 @@ public class Moving extends Thread {
                                 break;
                             }
                         }
+                if (ze.isBlocked() && !blockedZones.contains(ze.getId())) {
+                    blockedZones.add(ze.getId());
+                    log.debug("Zone {} blocked at time {}", ze.getId(), timeModel);
+                }
+            }
 
             time = fdsTime - previousFdsTime;
             previousFdsTime = fdsTime;
@@ -93,12 +119,18 @@ public class Moving extends Thread {
 
             int balance = traffic.footTraffic(time);
 
-            log.info("In progress: number of people in Safety zone: {}, simulation time: {}",
-                    bim.getSafetyZone().getNumOfPeople(), timeModel);
+            // START ------------- ANALYSIS -------------------
+            // Подсчет людей проходящих через заданные проемы. Проемы задаются в классе Analysis
+            analysis.counterPeopleThroughDoor(timeModel);
+            // Фиксация динамики выхода люде из здания
+            dynamicsOfGeneralEvac.add(timeModel + ";" + bim.getSafetyZone().getNumOfPeople());
+            // END ------------- ANALYSIS -------------------
+
+            /*log.info("In progress: number of people in Safety zone: {}, simulation time: {}",
+                    bim.getSafetyZone().getNumOfPeople(), timeModel);*/
 
             if (balance != -1) {
                 log.debug("fdsTime: {}", fdsTime);
-                //timeModel += balance * fdsTime;
                 break;
             }
 
@@ -107,5 +139,12 @@ public class Moving extends Thread {
 
         log.info("Successful finish simulation. Total: number of people in Safety zone: {} of {}, simulation time: {}",
                 bim.getSafetyZone().getNumOfPeople(), nop, timeModel);
+        // Запись результатов
+        // Динамика выхода людей из здания
+        analysis.saveResult(dynamicsOfGeneralEvac, nop, "g");/**/ // G - general. Динамика выхода из здания
+        // Динамика движения через обозначенные проемы
+        analysis.getTimeList().forEach((k, v) -> {
+            if (analysis.getUuidMap().containsKey(k)) analysis.saveResult(v, nop, "t" + analysis.getUuidMap().get(k));
+        });/**/
     }
 }
