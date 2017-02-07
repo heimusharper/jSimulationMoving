@@ -207,7 +207,10 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
         //post(new ZoneInfo().changePermeability(getId(), this.permeability));
     }
 
-    public boolean isBloked() {
+    /**
+     * @return true, если проходимость помещения 0, т.е. помещение заблокировано
+     */
+    public boolean isBlocked() {
         return getPermeability() == 0.0;
     }
 
