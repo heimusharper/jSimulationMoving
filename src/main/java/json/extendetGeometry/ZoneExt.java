@@ -98,7 +98,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
 
         for (int i = 0; i < getXyz()[0].length; i++) {
             final double z = getXyz(0, i, 2);
-            if (z <= zMin) zMin = z;
+            if (z <= zMin || isNaN(zMin)) zMin = z;
         }
         return zMin;
     }
@@ -111,7 +111,7 @@ public class ZoneExt extends Zone<LightExt, SensorExt, SpeakerExt> implements Ev
 
         for (int i = 0; i < getXyz()[0].length; i++) {
             final double z = getXyz(0, i, 2);
-            if (z >= zMax) zMax = z;
+            if (z >= zMax || isNaN(zMax)) zMax = z;
         }
         return zMax;
     }
