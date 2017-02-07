@@ -208,7 +208,7 @@ class Traffic {
                     }
                 }
                 // Сортировка очередей по времени достижения безопасной зоны
-                sortingDensity(tmpArrForSort, workQueue);
+                sortingDensity(tmpArrForSort, workQueue, true); // true - сортировка по убыванию
                 // Обход зон, следующих за ближайшей к эвакуационному выходу
                 for (int k, iiTurn = 0; iiTurn < NUM_OF_EXITS; iiTurn++) { // == 001
                     int ii = workQueue[iiTurn];
@@ -235,7 +235,7 @@ class Traffic {
                                     double dZone = radiatingArea.getDensityOfPeople();
                                     double lTransition = transit.getWidth();
                                     double vTransition = vElem(lTransition, dZone);
-//                                    double vAtExit = receivingArea.getPermeability() * Math.min(vZone, vTransition);
+                                    /*double vAtExit = receivingArea.getPermeability() * Math.min(vZone, vTransition);*/
                                     double vAtExit = Math.min(vZone, vTransition);
                                     double d1 = lTransition * vAtExit * getTay() / sZone;
                                     double d2 = (d1 >= 1) ? 1 : d1;
@@ -342,23 +342,14 @@ class Traffic {
         double delta = dPeopleZone - dPeople;
         double ddPeople = (delta > 0) ? dPeople : dPeopleZone;
 
-        safetyZone.addPeople(ddPeople);// Увел. людей в безоп. зоне
+        safetyZone.addPeople(ddPeople);// Увеличение количества людей в безопасной зоне
         _zone.removePeople(ddPeople);
-        // Увеличение счетчика людей, прошедших через дверь ii
-        exit.addPassingPeople(ddPeople);
-        // Признак обработки двери. Увеличение TransitionExt#nTay на
-        // единицу
-        exit.nTayIncrease();
-        // Выход через дверь ii на улицу. Присвоили выходу номер
-        exit.setNumberExit(ii);
-        // Признак обработки элемента здания
-        // Метка, которая говорит, что это помещение уже обработано
-        // ii-той дверью
-        _zone.setNTay(exit.getNTay());
-        // Помещение освобождается через выход ii
-        _zone.setNumberExit(ii);
-        // Потенциал времени в первом помещении. Время достижения
-        // эвакуационного выхода из зоны
+        exit.addPassingPeople(ddPeople); // Увеличение счетчика людей, прошедших через дверь ii
+        exit.nTayIncrease(); // Признак обработки двери. Увеличение TransitionExt#nTay на единицу
+        exit.setNumberExit(ii); // Выход через дверь ii на улицу. Присвоили выходу номер
+        _zone.setNTay(exit.getNTay()); // Метка, которая говорит, что это помещение уже обработано ii-той дверью
+        _zone.setNumberExit(ii);// Помещение освобождается через выход ii
+        // Потенциал времени в первом помещении. Время достижения эвакуационного выхода из зоны
         _zone.setTimeToReachExit((vAtExit > 0) ? Math.sqrt(sZone) / vAtExit : 0.0);
 
         return _zone;
