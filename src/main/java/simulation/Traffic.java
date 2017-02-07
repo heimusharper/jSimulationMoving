@@ -208,7 +208,9 @@ class Traffic {
                     }
                 }
                 // Сортировка очередей по времени достижения безопасной зоны
-                sortingDensity(tmpArrForSort, workQueue, true); // true - сортировка по убыванию
+                // true - сортировка по убыванию, т.е. в на первое место встает очередь, где время достижения
+                // эвакуационного выхода наибольшее
+                sortingDensity(tmpArrForSort, workQueue, true);
                 // Обход зон, следующих за ближайшей к эвакуационному выходу
                 for (int k, iiTurn = 0; iiTurn < NUM_OF_EXITS; iiTurn++) { // == 001
                     int ii = workQueue[iiTurn];
