@@ -30,8 +30,6 @@ package core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulation.Moving;
-import tcp.TCPClient;
-import tcp.TCPServer;
 
 /**
  * Точка входа
@@ -42,10 +40,11 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws InstantiationException, IllegalAccessException {
+        new Moving().start();
     	// TCP_SERVER
-        log.info("Starting tcp server");
+        /*log.info("Starting tcp server");
         TCPServer server = new TCPServer();
-        server.start();
+        server.start();*/
 
         // TCP_CLIENT
         /*log.info("Starting tcp client");
