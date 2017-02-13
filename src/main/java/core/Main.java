@@ -30,6 +30,9 @@ package core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulation.Moving;
+import tools.Plotting;
+
+import java.util.ArrayList;
 
 /**
  * Точка входа
@@ -39,9 +42,29 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String... args) throws InstantiationException, IllegalAccessException {
-        new Moving().start();
-    	// TCP_SERVER
+    public static void main(String... args)
+            throws InstantiationException, IllegalAccessException, InterruptedException {
+        String fileName = "UdSU_c6sD_devc.csv";
+        /*double[] densities = new double[] { 0.01, 0.05, 0.1, 0.2, 0.5 };*/
+        double[] densities = new double[] { 0.2 };
+        boolean isFire = true;
+        ArrayList<String> doors = new ArrayList<>();
+        /*doors.add("A");/**/
+        /*doors.add("B");/**/
+        /*doors.add("C");/**/
+        /*doors.add("D");/**/
+        /*doors.add("E");/**/
+        /*doors.add("F");/**/
+        doors.add("G");/**/
+
+        Plotting plot = new Plotting(fileName, isFire);
+        for (double density : densities) {
+            new Moving(fileName, density, isFire, plot).run();
+        }
+        /*plot.genGeneralPlotFile();*/
+        plot.genTransitionPlotFile(doors);
+
+        // TCP_SERVER
         /*log.info("Starting tcp server");
         TCPServer server = new TCPServer();
         server.start();*/

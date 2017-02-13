@@ -38,7 +38,7 @@ import java.util.*;
 
 /**
  * Класс, содержащий интсрументы для исследования модели
- *
+ * <p>
  * Created by boris on 02.02.17.
  */
 public class Analysis {
@@ -46,17 +46,19 @@ public class Analysis {
     private final String  fileName;
     private final boolean isFire;
     private final double  density;
+    private final String  pathToSave;
 
     private BIMExt                             bim;
     private HashMap<String, TransitionExt>     transitionsMap;
     private HashMap<String, String>            uuidMap;
     private HashMap<String, ArrayList<String>> timeList;
 
-    public Analysis(BIMExt bim, String fileName, boolean isFire, double density) {
+    public Analysis(BIMExt bim, String fileName, boolean isFire, double density, String pathToSave) {
         this.bim = bim;
         this.fileName = fileName;
         this.isFire = isFire;
         this.density = density;
+        this.pathToSave = pathToSave;
 
         uuidMap = new HashMap<>();
         uuidMap.put("{224ef342-55df-4010-9e95-5950a57a084d}", "A");
@@ -115,7 +117,7 @@ public class Analysis {
                 .append(density).append("-p").append(new BigDecimal(nop).setScale(1, RoundingMode.UP).doubleValue())
                 .append("-").append(note).toString();
         try {
-            PrintWriter writer = new PrintWriter("src/main/resources/out-170206/" + fName + ".csv", "UTF-8");
+            PrintWriter writer = new PrintWriter(pathToSave + "/" + fName + ".csv", "UTF-8");
             for (String s : val) writer.println(s);
             writer.close();
         } catch (IOException ignored) {}

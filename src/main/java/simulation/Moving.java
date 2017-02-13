@@ -32,6 +32,7 @@ import json.extendetGeometry.ZoneExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.Analysis;
+import tools.Plotting;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -46,9 +47,19 @@ import static json.extendetGeometry.SensorExt.T_TEMPERATURE;
 public class Moving extends Thread {
     private static final Logger log = LoggerFactory.getLogger(Moving.class);
 
-    private String  fileName = "UdSU_c6sD_devc.csv";
-    private double  density  = 0.2;
-    private boolean isFire   = true;
+    private String  fileName;
+    private double  density;
+    private boolean isFire;
+    private Plotting plot;
+
+    public Moving(String fileName, double density, boolean isFire, Plotting plot) {
+        this.fileName = fileName;
+        this.density = density;
+        this.isFire = isFire;
+        this.plot = plot;
+    }
+
+    public Moving() {}
 
     @Override public void run() {
         log.info("Running thread with simulation moving");
@@ -71,8 +82,7 @@ public class Moving extends Thread {
             // Распечатка количества людей по этажам
             bim.getNumOfPeopleOnLayers().forEach((l, p) -> log.debug("On level {} is {} people ", l, p));
         }
-
-        Analysis analysis = new Analysis(bim, fileName, isFire, density);
+        Analysis analysis = new Analysis(bim, fileName, isFire, density, plot.getWorkDir().getAbsolutePath());
         ArrayList<String> blockedZones = new ArrayList<>();
         ArrayList<String> dynamicsOfGeneralEvac = new ArrayList<>(); // Динамика вышедших на улицу
         dynamicsOfGeneralEvac.add(String.valueOf(0.0) + ";" + String.valueOf(bim.getSafetyZone().getNumOfPeople()));
@@ -109,6 +119,7 @@ public class Moving extends Thread {
                         }
                 if (ze.isBlocked() && !blockedZones.contains(ze.getId())) {
                     blockedZones.add(ze.getId());
+                    plot.addTimeBlock(timeModel);
                     log.debug("Zone {} blocked at time {}", ze.getId(), timeModel);
                 }
             }
@@ -141,10 +152,12 @@ public class Moving extends Thread {
                 bim.getSafetyZone().getNumOfPeople(), nop, timeModel);
         // Запись результатов
         // Динамика выхода людей из здания
-        analysis.saveResult(dynamicsOfGeneralEvac, nop, "g");/**/ // G - general. Динамика выхода из здания
+        /*analysis.saveResult(dynamicsOfGeneralEvac, nop, "g");/**/ // G - general. Динамика выхода из здания
         // Динамика движения через обозначенные проемы
         analysis.getTimeList().forEach((k, v) -> {
             if (analysis.getUuidMap().containsKey(k)) analysis.saveResult(v, nop, "t" + analysis.getUuidMap().get(k));
         });/**/
+
+        plot.setEndModelling();
     }
 }
