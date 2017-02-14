@@ -110,12 +110,18 @@ public class Plotting {
                 + plotData.substring(0, plotData.length()-4);
 
         try {
-            PrintWriter writer = new PrintWriter(
+            gpFile =
                     getWorkDir().getAbsoluteFile() + "/" + getWorkDir().getName() + (isFire ? "-Fire" : "-NoFire") + "G"
-                            + ".gp", "UTF-8");
+                            + ".gp";
+            PrintWriter writer = new PrintWriter(gpFile, "UTF-8");
             writer.print(plotFile);
             writer.close();
         } catch (IOException ignored) {}
+    }
+
+    private String gpFile;
+    public String getGpFile() {
+        return gpFile;
     }
 
     public void genTransitionPlotFile(ArrayList<String> doors) {
@@ -167,8 +173,8 @@ public class Plotting {
                 + plotData.substring(0, plotData.length()-4);
 
         try {
-            PrintWriter writer = new PrintWriter(
-                    getWorkDir().getAbsoluteFile() + "/" + getWorkDir().getName() + "-T" + ".gp", "UTF-8");
+            gpFile = getWorkDir().getAbsoluteFile() + "/" + getWorkDir().getName() + "-T" + ".gp";
+            PrintWriter writer = new PrintWriter(gpFile, "UTF-8");
             writer.print(plotFile);
             writer.close();
         } catch (IOException ignored) {}
@@ -189,7 +195,8 @@ public class Plotting {
     private String createPlotString(FileUnit u, int i) {
         String s = (u.isGeneral()) ?
                 " \"p" + u.getDensity() + " (" + u.getNumOfPeople() + ")" :
-                " \"" + (u.isFireScenario() ? u.getTypeN() + " без пожара" : u.getTypeN() + " при пожаре");
+                " \"" + (u.isFireScenario() ? u.getTypeN() + " при пожаре" : u.getTypeN() + " без пожара");
+
         return "\"" + u.getName() + "\"" + " using 1:($2/" + u.getNumOfPeople() + ") smooth bezier title" + s + "\" "
                 + "with " + "linespoints" + " linestyle" + " " + (i) + " ,\\\n";
     }
