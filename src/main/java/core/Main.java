@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 import simulation.Moving;
 import tools.Plotting;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -43,26 +46,47 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args)
-            throws InstantiationException, IllegalAccessException, InterruptedException {
-        String fileName = "UdSU_c6sD_devc.csv";
+            throws InstantiationException, IllegalAccessException, InterruptedException, IOException {
+        String fileName = "UdSU_c6sA_devc.csv";
         /*double[] densities = new double[] { 0.01, 0.05, 0.1, 0.2, 0.5 };*/
-        double[] densities = new double[] { 0.2 };
-        boolean isFire = true;
+        double[] densities = new double[] { 0.3 };
+        /*boolean isFire = true;*/
+        boolean[] scenario = { false, true };
         ArrayList<String> doors = new ArrayList<>();
         /*doors.add("A");/**/
-        /*doors.add("B");/**/
+        doors.add("B");/**/
         /*doors.add("C");/**/
         /*doors.add("D");/**/
         /*doors.add("E");/**/
         /*doors.add("F");/**/
-        doors.add("G");/**/
+        /*doors.add("G");/**/
 
-        Plotting plot = new Plotting(fileName, isFire);
-        for (double density : densities) {
-            new Moving(fileName, density, isFire, plot).run();
+        Plotting plot = null;
+        for (boolean isFire : scenario) {
+            plot = new Plotting(fileName, isFire);
+            for (double density : densities) new Moving(fileName, density, isFire, plot).run();
+            /*plot.genGeneralPlotFile();*/
+            plot.genTransitionPlotFile(doors);
         }
-        /*plot.genGeneralPlotFile();*/
-        plot.genTransitionPlotFile(doors);
+
+        ProcessBuilder builder = new ProcessBuilder();
+        // Рабочая дирректория
+        builder.directory(plot.getWorkDir());
+
+        builder.command("gnuplot5", plot.getGpFile());
+        // указываем перенаправление stderr в stdout, чтобы проще было отлаживать
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
+
+        // ждем завершения процесса
+        process.waitFor();
 
         // TCP_SERVER
         /*log.info("Starting tcp server");
